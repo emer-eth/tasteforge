@@ -97,9 +97,27 @@ Each axis is scored 0.0–1.0:
 | Luca Fontaine | `gilded_archive` | Baroque grail hunter |
 | Jordan Reyes | `pixel_pilgrim` | Street culture + 90s nostalgia |
 
+## Deploy to Vercel
+
+**Repo:** https://github.com/emer-eth/tasteforge
+
+### Option A — Vercel Dashboard (fastest)
+
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import `emer-eth/tasteforge`
+3. Click **Deploy** (no env vars required for demo mode)
+4. Optional: add `OPENAI_API_KEY` or `GROK_API_KEY` in Project Settings → Environment Variables for LLM mode
+
+### Option B — Vercel CLI
+
+```bash
+vercel login
+cd tasteforge
+vercel deploy --prod
+```
+
 ## Next Steps
 
 - [ ] Supabase persistence for collectors + taste vectors
 - [ ] Vision layer (GPT-4o / CLIP) for card image analysis
 - [ ] Real Renaiss API integration
-- [ ] Deploy to Vercel
