@@ -1,23 +1,16 @@
 "use client";
 
+import { TasteForgeLogo } from "@/components/TasteForgeLogo";
 import { scrollToSection } from "@/lib/scroll-to-section";
 
 export function Header() {
   return (
     <header className="header-glass sticky top-0 z-50">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
-        <a href="#top" className="group flex items-center gap-3">
-          <div className="logo-mark flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-[#1a1208]">
-            TF
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight text-stone-50 transition-colors group-hover:text-[#f5b942]">
-              TasteForge
-            </h1>
-            <p className="text-[11px] text-stone-500">
-              Renaiss taste intelligence
-            </p>
-          </div>
+        <a href="#top" className="group transition-opacity hover:opacity-95">
+          <TasteForgeLogo
+            titleClassName="transition-colors group-hover:text-[#f5b942]"
+          />
         </a>
         <div className="flex items-center gap-2">
           <button

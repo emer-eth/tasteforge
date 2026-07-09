@@ -14,6 +14,7 @@ import { ActivityHistory } from "@/components/ActivityHistory";
 import { AgentProgress } from "@/components/AgentProgress";
 import { TasteAssistant } from "@/components/TasteAssistant";
 import { SideNav } from "@/components/SideNav";
+import { TasteForgeLogoMark } from "@/components/TasteForgeLogo";
 import { PresentationSummary } from "@/components/PresentationSummary";
 import { RecommendationRefine } from "@/components/RecommendationRefine";
 import { scrollToSection } from "@/lib/scroll-to-section";
@@ -615,7 +616,12 @@ export function TasteForgeDemo() {
       />
 
       <footer className="border-t border-white/[0.06] pt-8 text-center">
-        <p className="headline text-lg text-gradient-brand">TasteForge</p>
+        <div className="mx-auto mb-3 flex w-fit items-center justify-center gap-2.5">
+          <div className="logo-mark flex items-center justify-center rounded-xl p-1.5">
+            <TasteForgeLogoMark size={22} />
+          </div>
+          <p className="headline text-lg text-gradient-brand">TasteForge</p>
+        </div>
         <p className="mt-2 text-xs text-zinc-600">
           Renaiss Hackathon · July 11 · Built for collectors who want taste{" "}
           <em className="text-stone-500 not-italic">and</em> value
