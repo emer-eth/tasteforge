@@ -122,7 +122,7 @@ export function CollectorProfile({ data }: CollectorProfileProps) {
 
       {socialSignals && socialSignals.length > 0 && (
         <div className="panel-gold mb-4 rounded-xl p-3">
-          <p className="section-label mb-2 text-[#f5b942]">Taste signals</p>
+          <p className="section-label mb-2 text-[#c9a961]">Taste signals</p>
           <div className="flex flex-wrap gap-2">
             {socialSignals.map((signal) => (
               <span

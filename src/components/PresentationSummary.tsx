@@ -64,7 +64,7 @@ export function PresentationSummary({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="section-label text-[#f5b942]">Presentation snapshot</p>
+          <p className="section-label text-[#c9a961]">Presentation snapshot</p>
           <h2 className="headline mt-2 text-2xl text-stone-50">
             Demo-ready summary
           </h2>
@@ -125,8 +125,8 @@ export function PresentationSummary({
           </p>
         </div>
 
-        <div className="stat-tile border-[#f5b942]/20 bg-[#f5b942]/5">
-          <p className="text-[10px] uppercase tracking-wider text-[#f5b942]/80">
+        <div className="stat-tile border-[#c9a961]/20 bg-[#c9a961]/5">
+          <p className="text-[10px] uppercase tracking-wider text-[#c9a961]/80">
             Best Overall
           </p>
           {topOverall && (

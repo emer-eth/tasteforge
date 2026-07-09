@@ -142,7 +142,7 @@ export function TasteAssistant({
                 <div
                   className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-[#f5b942]/20 text-stone-100 ring-1 ring-[#f5b942]/25"
+                      ? "bg-[#c9a961]/20 text-stone-100 ring-1 ring-[#c9a961]/25"
                       : "bg-white/[0.04] text-stone-300 ring-1 ring-white/[0.06]"
                   }`}
                 >

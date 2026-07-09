@@ -28,7 +28,7 @@ export function DemoWalletChips({
             className="chip-demo disabled:cursor-not-allowed disabled:opacity-50"
             title={preset.description}
           >
-            <span className="font-semibold text-[#f5b942]">{preset.label}</span>
+            <span className="font-semibold text-[#c9a961]">{preset.label}</span>
           </button>
         ))}
         <button

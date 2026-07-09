@@ -149,7 +149,7 @@ export function MarketplaceShowcase({
             onClick={() => setFilter(f.id)}
             className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
               filter === f.id
-                ? "bg-[#f5b942]/15 text-[#f5b942] ring-1 ring-[#f5b942]/40"
+                ? "bg-[#c9a961]/15 text-[#c9a961] ring-1 ring-[#c9a961]/40"
                 : "bg-zinc-800/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
             }`}
           >

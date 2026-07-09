@@ -1,0 +1,58 @@
+---
+description: TasteForge Renaiss Hackathon MVP — agent, wallet, and marketplace integration rules
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# TasteForge (Cursor)
+
+Renaiss Hackathon MVP — deadline **July 11, 2026**.
+
+## Project
+
+AI agent + web app helping collectors find cards matching personal taste AND value.
+
+## Key integrations
+
+| Source | URL | Use |
+|--------|-----|-----|
+| Renaiss Marketplace API | `https://www.renaiss.xyz/api/trpc/collectible.list` | Live FMV, prices, images, owner lookup |
+| renaiss-scanner | https://github.com/blueskylh/renaiss-scanner | Reference impl; optional scanner API |
+| Scanner tool (deployed) | https://renaiss-tool-689931.napa.de5.net/ | Consecutive pair discovery UI |
+
+## Architecture
+
+```
+Wallet paste → viem BNB validate → Renaiss marketplace owner scan
+              → Taste Vector (LangGraph) → Resonance + Value scores
+              → Best Overall / Best Value recommendations
+```
+
+## Code layout
+
+- `src/lib/renaiss/` — marketplace client, scanner client, card mapping
+- `src/lib/chain/` — viem BSC read-only
+- `src/lib/agents/` — LangGraph pipeline
+- `src/lib/taste-vector/` — resonance + value scoring
+- `src/app/api/wallet` — wallet holdings
+- `src/app/api/analyze` — full agent run
+
+## Demo wallets
+
+- Maya: `0x0000000000000000000000000000000000000001`
+- Luca: `0x0000000000000000000000000000000000000002`
+- Jordan: `0x0000000000000000000000000000000000000003`
+
+## Conventions
+
+- Read-only chain access only — never request private keys
+- Mock fallback when live API fails (hackathon-safe demos)
+- Keep UI dark collector theme (zinc/amber/rose)
+- Prefer extending existing types in `src/lib/types/index.ts`
+
+## Next priorities
+
+1. Chat assistant for taste refinement
+2. Image upload → vision taste signals
+3. renaiss-scanner pair highlights in Best Value section

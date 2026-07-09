@@ -423,7 +423,7 @@ export function TasteForgeDemo() {
         />
         <div className="relative">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="section-label text-[#f5b942]">TasteForge Agent</p>
+            <p className="section-label text-[#c9a961]">TasteForge Agent</p>
             <span className="badge-live px-2.5 py-0.5 text-[10px]">
               Live Renaiss
             </span>

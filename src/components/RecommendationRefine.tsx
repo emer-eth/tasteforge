@@ -41,7 +41,7 @@ export function RecommendationRefine({
               maxPrice: Number(e.target.value),
             })
           }
-          className="mt-2 w-full accent-[#f5b942]"
+          className="mt-2 w-full accent-[#c9a961]"
         />
       </div>
 

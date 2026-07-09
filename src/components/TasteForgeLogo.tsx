@@ -28,7 +28,7 @@ export function TasteForgeLogoMark({
           y2="36"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#f5b942" />
+          <stop stopColor="#c9a961" />
           <stop offset="0.55" stopColor="#f9738a" />
           <stop offset="1" stopColor="#a78bfa" />
         </linearGradient>
@@ -40,7 +40,7 @@ export function TasteForgeLogoMark({
           y2="12"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#2dd4bf" />
+          <stop stopColor="#3fa98a" />
           <stop offset="1" stopColor="#38bdf8" />
         </linearGradient>
         <linearGradient
@@ -96,10 +96,10 @@ export function TasteForgeLogoMark({
         strokeWidth="1"
         strokeLinejoin="round"
       />
-      <circle cx="20" cy="19" r="1.1" fill="#2dd4bf" fillOpacity="0.9" />
+      <circle cx="20" cy="19" r="1.1" fill="#3fa98a" fillOpacity="0.9" />
 
       {/* Dimension bars */}
-      <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#f5b942" fillOpacity="0.85" />
+      <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#c9a961" fillOpacity="0.85" />
       <rect x="18.5" y="26.5" width="3" height="5.5" rx="0.75" fill="#f9738a" fillOpacity="0.9" />
       <rect x="24" y="27.5" width="3" height="4.5" rx="0.75" fill="#a78bfa" fillOpacity="0.85" />
 

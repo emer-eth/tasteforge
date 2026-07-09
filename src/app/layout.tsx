@@ -1,21 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import {
+  Archivo,
+  Cormorant_Garamond,
+  IBM_Plex_Mono,
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
   subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
+  variable: "--font-ibm-mono",
+  display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
+const cormorant = Cormorant_Garamond({
+  weight: ["400", "500", "600"],
+  style: ["italic", "normal"],
   subsets: ["latin"],
-  variable: "--font-instrument-serif",
+  variable: "--font-cormorant",
+  display: "swap",
 });
 
 const siteUrl =
@@ -51,9 +60,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${archivo.variable} ${ibmPlexMono.variable} ${cormorant.variable} h-full antialiased`}
     >
-      <body className="relative min-h-full bg-[#0a090d] text-stone-50">
+      <body className="relative min-h-full">
         <div className="page-glow" aria-hidden />
         <div className="page-mesh" aria-hidden />
         <div className="page-noise" aria-hidden />

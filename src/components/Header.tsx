@@ -9,7 +9,7 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
         <a href="#top" className="group transition-opacity hover:opacity-95">
           <TasteForgeLogo
-            titleClassName="transition-colors group-hover:text-[#f5b942]"
+            titleClassName="transition-colors group-hover:text-[#c9a961]"
           />
         </a>
         <div className="flex items-center gap-2">

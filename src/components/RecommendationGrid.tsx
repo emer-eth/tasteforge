@@ -15,9 +15,9 @@ function RecommendationSection({
   accent = "gold",
 }: RecommendationSectionProps) {
   const accentBorder =
-    accent === "sky" ? "border-sky-400/50" : "border-[#f5b942]/50";
+    accent === "sky" ? "border-sky-400/50" : "border-[#c9a961]/50";
   const accentText =
-    accent === "sky" ? "text-sky-400" : "text-[#f5b942]";
+    accent === "sky" ? "text-sky-400" : "text-[#c9a961]";
 
   if (recommendations.length === 0) return null;
 

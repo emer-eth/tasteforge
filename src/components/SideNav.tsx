@@ -34,7 +34,7 @@ const NAV_ITEMS: NavItem[] = [
     short: "⌁",
     targetId: "analyze",
     focusSelector: "#wallet-address-input",
-    accent: "border-[#f5b942]/40 bg-[#f5b942]/10 text-[#f5b942] hover:bg-[#f5b942]/20",
+    accent: "border-[#c9a961]/40 bg-[#c9a961]/10 text-[#c9a961] hover:bg-[#c9a961]/20",
   },
   {
     id: "results",
@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
     label: "Presentation",
     short: "★",
     targetId: "presentation",
-    accent: "hover:border-[#f5b942]/40 hover:text-[#f5b942]",
+    accent: "hover:border-[#c9a961]/40 hover:text-[#c9a961]",
   },
   {
     id: "marketplace",
@@ -140,9 +140,9 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#0a090d]/90 px-2 py-2 text-xs font-medium text-stone-400 shadow-lg backdrop-blur-md transition-all ${
               active === item.id
                 ? item.id === "analyze"
-                  ? "border-[#f5b942]/50 bg-[#f5b942]/15 text-[#f5b942] shadow-[0_0_24px_-4px_rgba(245,185,66,0.35)]"
+                  ? "border-[#c9a961]/50 bg-[#c9a961]/15 text-[#c9a961] shadow-[0_0_24px_-4px_rgba(245,185,66,0.35)]"
                   : item.id === "presentation"
-                    ? "border-[#f5b942]/40 bg-[#f5b942]/10 text-[#f5b942]"
+                    ? "border-[#c9a961]/40 bg-[#c9a961]/10 text-[#c9a961]"
                     : "border-white/20 bg-white/10 text-stone-200"
                 : item.accent
             }`}
@@ -170,7 +170,7 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             className={`flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-[10px] transition-colors ${
               active === item.id
                 ? item.id === "analyze"
-                  ? "text-[#f5b942]"
+                  ? "text-[#c9a961]"
                   : "text-stone-200"
                 : "text-stone-500"
             }`}

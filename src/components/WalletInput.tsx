@@ -97,7 +97,7 @@ export function WalletInput({
   return (
     <section id="analyze" className="panel scroll-mt-24 p-6 sm:p-8">
       <div className="flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f5b942]/15 text-sm font-bold text-[#f5b942] ring-1 ring-[#f5b942]/30">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c9a961]/15 text-sm font-bold text-[#c9a961] ring-1 ring-[#c9a961]/30">
           1
         </span>
         <p className="section-label text-stone-500">Wallet + optional taste</p>
@@ -222,7 +222,7 @@ export function WalletInput({
             <p className="text-xs text-amber-400/90">{bioError}</p>
           )}
 
-          <label className="block text-xs font-medium text-[#f5b942]/90">
+          <label className="block text-xs font-medium text-[#c9a961]/90">
             Social taste signals
           </label>
           <textarea

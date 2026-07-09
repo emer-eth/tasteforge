@@ -28,7 +28,7 @@ export function CardDisplay({
       <div className={`relative ${compact ? "aspect-[4/3]" : "aspect-[3/4]"}`}>
         <CardArt card={card} className="h-full w-full" />
         {rank !== undefined && (
-          <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-sm font-bold text-[#f5b942] ring-1 ring-[#f5b942]/30 backdrop-blur">
+          <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-sm font-bold text-[#c9a961] ring-1 ring-[#c9a961]/30 backdrop-blur">
             #{rank}
           </div>
         )}

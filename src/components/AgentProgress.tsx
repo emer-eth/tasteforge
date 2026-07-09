@@ -37,7 +37,7 @@ export function AgentProgress({
           style={{
             width: `${progressPct}%`,
             background:
-              "linear-gradient(90deg, var(--teal), var(--gold), var(--coral))",
+              "linear-gradient(90deg, var(--live), var(--gold), var(--violet))",
           }}
         />
       </div>
@@ -60,9 +60,9 @@ export function AgentProgress({
               <div
                 className={`progress-dot flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                   isComplete
-                    ? "bg-teal-500/20 text-teal-300 ring-1 ring-teal-500/35"
+                    ? "bg-[rgba(63,169,138,0.2)] text-[#7fd4b8] ring-1 ring-[rgba(63,169,138,0.35)]"
                     : isActive
-                      ? "bg-[#f5b942]/20 text-[#f5b942] ring-2 ring-[#f5b942]/45"
+                      ? "bg-[#c9a961]/20 text-[#c9a961] ring-2 ring-[#c9a961]/45"
                       : "bg-white/5 text-stone-600"
                 }`}
               >

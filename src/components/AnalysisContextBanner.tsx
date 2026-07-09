@@ -44,7 +44,7 @@ export function AnalysisContextBanner({
   if (isRunning) {
     return (
       <div className="panel status-running rounded-xl px-4 py-3">
-        <p className="text-sm font-medium text-[#f5b942]">
+        <p className="text-sm font-medium text-[#c9a961]">
           Analyzing wallet {short(walletAddress)}…
         </p>
         <p className="mt-1 text-xs text-stone-400">

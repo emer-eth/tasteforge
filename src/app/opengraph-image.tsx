@@ -17,8 +17,8 @@ export default function Image() {
           justifyContent: "space-between",
           padding: "72px 80px",
           background:
-            "radial-gradient(ellipse 80% 60% at 10% 0%, rgba(245,185,66,0.22), transparent 55%), radial-gradient(ellipse 60% 50% at 90% 20%, rgba(167,139,250,0.18), transparent 50%), radial-gradient(ellipse 50% 40% at 50% 100%, rgba(249,115,138,0.12), transparent 55%), linear-gradient(145deg, #0a090d 0%, #141018 45%, #0f0d12 100%)",
-          color: "#fafaf9",
+            "radial-gradient(ellipse 80% 60% at 10% 0%, rgba(201,169,97,0.22), transparent 55%), radial-gradient(ellipse 60% 50% at 90% 20%, rgba(155,142,196,0.16), transparent 50%), radial-gradient(ellipse 50% 40% at 50% 100%, rgba(63,169,138,0.1), transparent 55%), linear-gradient(145deg, #15120d 0%, #1e1912 45%, #15120d 100%)",
+          color: "#f2ede3",
           fontFamily: "system-ui, sans-serif",
         }}
       >
@@ -50,22 +50,22 @@ export default function Image() {
                 width="22"
                 height="30"
                 rx="3.5"
-                fill="#141018"
-                stroke="#f5b942"
+                fill="#1e1912"
+                stroke="#c9a961"
                 strokeWidth="1.5"
               />
               <path
                 d="M20 11.5 24.2 17.2 22.4 25.8 17.6 25.8 15.8 17.2Z"
-                fill="rgba(45,212,191,0.25)"
-                stroke="#2dd4bf"
+                fill="rgba(63,169,138,0.25)"
+                stroke="#3fa98a"
                 strokeWidth="1"
               />
-              <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#f5b942" />
-              <rect x="18.5" y="26.5" width="3" height="5.5" rx="0.75" fill="#f9738a" />
-              <rect x="24" y="27.5" width="3" height="4.5" rx="0.75" fill="#a78bfa" />
+              <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#c9a961" />
+              <rect x="18.5" y="26.5" width="3" height="5.5" rx="0.75" fill="#d4847a" />
+              <rect x="24" y="27.5" width="3" height="4.5" rx="0.75" fill="#9b8ec4" />
               <path
                 d="M20 15.8 20.85 18.1 23.2 19 20.85 19.9 20 22.2 19.15 19.9 16.8 19 19.15 18.1Z"
-                fill="#f5b942"
+                fill="#c9a961"
               />
             </svg>
           </div>
@@ -80,7 +80,7 @@ export default function Image() {
             >
               TasteForge
             </div>
-            <div style={{ fontSize: 24, color: "#a8a29e" }}>
+            <div style={{ fontSize: 24, color: "#b5ac99" }}>
               Renaiss taste intelligence
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Image() {
           <div
             style={{
               fontSize: 26,
-              color: "#d6d3d1",
+              color: "#e5dfd2",
               lineHeight: 1.4,
               maxWidth: 920,
             }}
@@ -113,9 +113,9 @@ export default function Image() {
 
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
           {[
-            { label: "Live Renaiss", color: "#2dd4bf" },
-            { label: "Vision + taste", color: "#a78bfa" },
-            { label: "Quick form", color: "#f5b942" },
+            { label: "Live Renaiss", color: "#3fa98a" },
+            { label: "Vision + taste", color: "#9b8ec4" },
+            { label: "Quick form", color: "#c9a961" },
           ].map((badge) => (
             <div
               key={badge.label}
@@ -136,7 +136,7 @@ export default function Image() {
             style={{
               marginLeft: "auto",
               fontSize: 22,
-              color: "#78716c",
+              color: "#8b8271",
             }}
           >
             tasteforge.vercel.app
