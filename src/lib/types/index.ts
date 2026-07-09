@@ -112,6 +112,8 @@ export interface CollectorData {
   activityHistory?: CollectorActivityEvent[];
   /** Optional social / X text used to enrich taste signals */
   socialSignals?: string[];
+  /** Quick taste quiz selections (human labels for display) */
+  tasteQuizLabels?: string[];
   /** Blink vision analysis of held card images */
   visionAnalysis?: VisionTasteAnalysis;
   /** Whether recommendations require existing holdings */
@@ -139,6 +141,8 @@ export interface AnalyzeInput {
   socialText?: string;
   /** Optional @handle — stored for profile link; paste bio/tweets separately */
   xHandle?: string;
+  /** Quick taste quiz option IDs (see taste-quiz/config) */
+  tasteQuiz?: string[];
   imageHints?: string[];
 }
 

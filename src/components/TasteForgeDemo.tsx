@@ -36,10 +36,17 @@ export function TasteForgeDemo() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const autoAnalyzeRan = useRef(false);
+  const lastAnalyzedInput = useRef<{
+    wallet: string;
+    social: string;
+    xHandle: string;
+    quiz: string[];
+  } | null>(null);
 
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [xHandle, setXHandle] = useState("");
   const [socialText, setSocialText] = useState("");
+  const [tasteQuiz, setTasteQuiz] = useState<string[]>([]);
   const [holdings, setHoldings] = useState<WalletHoldings | null>(null);
   const [result, setResult] = useState<TasteForgeResult | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -55,12 +62,14 @@ export function TasteForgeDemo() {
       walletAddress: string;
       socialText: string;
       xHandle: string;
+      tasteQuiz: string[];
       autoAnalyze?: boolean;
     }) => {
       const params = new URLSearchParams();
       if (input.walletAddress) params.set("wallet", input.walletAddress);
       if (input.socialText) params.set("social", input.socialText);
       if (input.xHandle) params.set("x", input.xHandle);
+      if (input.tasteQuiz.length) params.set("quiz", input.tasteQuiz.join(","));
       if (input.autoAnalyze) params.set("analyze", "1");
       const query = params.toString();
       router.replace(query ? `?${query}` : "/", { scroll: false });
@@ -84,10 +93,16 @@ export function TasteForgeDemo() {
     setResult(null);
   }, []);
 
+  const handleTasteQuizChange = useCallback((optionIds: string[]) => {
+    setTasteQuiz(optionIds);
+    setResult(null);
+  }, []);
+
   const handleDemoSelect = useCallback((preset: DemoWalletPreset) => {
     setWalletAddress(preset.walletAddress);
     setSocialText(preset.socialText ?? "");
     setXHandle(preset.xHandle ?? "");
+    setTasteQuiz(preset.tasteQuiz ?? []);
     setResult(null);
     setHoldings(null);
   }, []);
@@ -120,6 +135,7 @@ export function TasteForgeDemo() {
       walletAddress: string;
       socialText: string;
       xHandle: string;
+      tasteQuiz: string[];
       updateUrl?: boolean;
     }) => {
     setIsRunning(true);
@@ -137,6 +153,7 @@ export function TasteForgeDemo() {
           walletAddress: input.walletAddress,
           socialText: input.socialText || undefined,
           xHandle: input.xHandle || undefined,
+          tasteQuiz: input.tasteQuiz.length ? input.tasteQuiz : undefined,
           stream: true,
         }),
       });
@@ -184,11 +201,18 @@ export function TasteForgeDemo() {
           if (event.type === "result" && event.result) {
             setResult(event.result);
             setActiveStep(8);
+            lastAnalyzedInput.current = {
+              wallet: input.walletAddress,
+              social: input.socialText,
+              xHandle: input.xHandle,
+              quiz: input.tasteQuiz,
+            };
             if (input.updateUrl !== false) {
               syncUrl({
                 walletAddress: input.walletAddress,
                 socialText: input.socialText,
                 xHandle: input.xHandle,
+                tasteQuiz: input.tasteQuiz,
                 autoAnalyze: true,
               });
             }
@@ -210,8 +234,9 @@ export function TasteForgeDemo() {
       walletAddress,
       socialText,
       xHandle,
+      tasteQuiz,
     });
-  }, [runAnalysis, walletAddress, socialText, xHandle]);
+  }, [runAnalysis, walletAddress, socialText, xHandle, tasteQuiz]);
 
   useEffect(() => {
     const params = parseShareParams(searchParams);
@@ -220,6 +245,7 @@ export function TasteForgeDemo() {
     setWalletAddress(params.walletAddress);
     if (params.socialText) setSocialText(params.socialText);
     if (params.xHandle) setXHandle(params.xHandle);
+    if (params.tasteQuiz.length) setTasteQuiz(params.tasteQuiz);
 
     if (
       params.autoAnalyze &&
@@ -231,19 +257,23 @@ export function TasteForgeDemo() {
         walletAddress: params.walletAddress,
         socialText: params.socialText,
         xHandle: params.xHandle,
+        tasteQuiz: params.tasteQuiz,
         updateUrl: false,
       });
     }
   }, [searchParams, runAnalysis]);
 
   const analyzedWallet = result?.walletAddress;
-  const isStale =
-    Boolean(analyzedWallet) &&
-    normalizeWallet(walletAddress) !== normalizeWallet(analyzedWallet!);
+  const isStale = Boolean(result && lastAnalyzedInput.current) &&
+    (normalizeWallet(walletAddress) !==
+      normalizeWallet(lastAnalyzedInput.current!.wallet) ||
+      socialText !== lastAnalyzedInput.current!.social ||
+      xHandle !== lastAnalyzedInput.current!.xHandle ||
+      tasteQuiz.join(",") !== lastAnalyzedInput.current!.quiz.join(","));
 
   const profileData: CollectorData =
     result?.collectorData ??
-    buildPendingCollectorData(walletAddress, socialText, xHandle);
+    buildPendingCollectorData(walletAddress, socialText, xHandle, tasteQuiz);
 
   const maxCatalogPrice = useMemo(() => {
     if (!result) return 2000;
@@ -287,11 +317,20 @@ export function TasteForgeDemo() {
             walletAddress: result.walletAddress,
             socialText,
             xHandle,
+            tasteQuiz,
             autoAnalyze: true,
           })
         : undefined,
     }),
-    [walletAddress, result, isStale, profileData.collectorMode, socialText, xHandle],
+    [
+      walletAddress,
+      result,
+      isStale,
+      profileData.collectorMode,
+      socialText,
+      xHandle,
+      tasteQuiz,
+    ],
   );
 
   return (
@@ -387,9 +426,11 @@ export function TasteForgeDemo() {
         walletAddress={walletAddress}
         xHandle={xHandle}
         socialText={socialText}
+        tasteQuiz={tasteQuiz}
         onWalletChange={handleWalletChange}
         onXHandleChange={handleXHandleChange}
         onSocialChange={handleSocialChange}
+        onTasteQuizChange={handleTasteQuizChange}
         onDemoSelect={handleDemoSelect}
         onSampleSocial={() =>
           setSocialText((prev) =>
@@ -409,6 +450,7 @@ export function TasteForgeDemo() {
         walletAddress={walletAddress}
         xHandle={xHandle}
         socialText={socialText}
+        tasteQuiz={tasteQuiz}
         analyzedWallet={analyzedWallet}
         holdingsCount={result?.collectorData.collection.length}
         collectorMode={result?.collectorMode ?? profileData.collectorMode}
@@ -445,8 +487,8 @@ export function TasteForgeDemo() {
               </p>
               <p className="mt-1 text-xs text-zinc-600">
                 {isStale
-                  ? "Wallet or social text changed — click Analyze Taste again."
-                  : "Enter wallet + social signals, then click Analyze Taste."}
+                  ? "Wallet or taste inputs changed — click Analyze Taste again."
+                  : "Enter wallet + taste signals (quick form or social text), then click Analyze Taste."}
               </p>
             </div>
           </div>

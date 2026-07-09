@@ -71,7 +71,13 @@ const FAQ: FaqEntry[] = [
     keywords: ["own", "holder", "non", "without", "need", "cards", "required"],
     patterns: [/need to own|without.*card|non.?holder|must i own/i],
     answer:
-      "You **don't need to own** Renaiss cards. **Holders** get richer signals from on-chain holdings + activity history. **Non-holders** still get full marketplace recommendations — paste social taste notes (vintage, PSA 10, bargains under FMV) and TasteForge scores the entire live catalog for you.",
+      "You **don't need to own** Renaiss cards. **Holders** get richer signals from on-chain holdings + activity history. **Non-holders** still get full marketplace recommendations — use the **Quick taste profile** form and/or paste social notes (vintage, PSA 10, bargains under FMV) and TasteForge scores the entire live catalog for you.",
+  },
+  {
+    keywords: ["quiz", "form", "tick", "checkbox", "quiet", "don't post", "hardly post", "no posts"],
+    patterns: [/quick (taste|form)|taste profile|don't post|hardly post|quiet poster|checkbox/i],
+    answer:
+      "Use the **Quick taste profile** form above the social text box — tick era, buy drivers, visual style, personality, characters, and serial strategy. TasteForge converts your picks into taste signals and **pairs them with wallet history** (holdings, vision, activity). Perfect for collectors who don't post much on X.",
   },
   {
     keywords: ["taste", "vector", "archetype", "dimensions", "profile", "fingerprint"],
@@ -119,7 +125,7 @@ const FAQ: FaqEntry[] = [
     keywords: ["preview", "analyze", "difference", "button", "click"],
     patterns: [/preview wallet|analyze taste|difference between/i],
     answer:
-      "**Preview wallet** = quick check (BNB balance + Renaiss holdings count). No recommendations.\n\n**Analyze Taste** = full agent run: on-chain scan → **vision analysis of held card artwork** (when images exist) → taste vector → score live catalog → recommendations + pairs. Run this for your presentation demo.",
+      "**Preview wallet** = quick check (BNB balance + Renaiss holdings count). No recommendations.\n\n**Analyze Taste** = full agent run: on-chain scan → optional **quick taste form** + social signals → **vision analysis** of held card artwork → taste vector → score live catalog → recommendations + pairs. Run this for your presentation demo.",
   },
   {
     keywords: ["stale", "changed", "outdated", "update", "again"],

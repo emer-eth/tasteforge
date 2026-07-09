@@ -105,6 +105,7 @@ async function resolveCollectorData(
     holdings,
     input.socialText,
     input.xHandle,
+    input.tasteQuiz,
   );
   return { data, walletAddress: holdings.address };
 }

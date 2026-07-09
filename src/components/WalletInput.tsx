@@ -5,14 +5,17 @@ import { normalizeXHandle, xProfileUrl } from "@/lib/collector/x-handle";
 import type { DemoWalletPreset } from "@/lib/demo-wallets";
 import type { WalletHoldings } from "@/lib/types";
 import { DemoWalletChips } from "@/components/DemoWalletChips";
+import { TasteQuickForm } from "@/components/TasteQuickForm";
 
 interface WalletInputProps {
   walletAddress: string;
   xHandle: string;
   socialText: string;
+  tasteQuiz: string[];
   onWalletChange: (address: string) => void;
   onXHandleChange: (handle: string) => void;
   onSocialChange: (text: string) => void;
+  onTasteQuizChange: (optionIds: string[]) => void;
   onDemoSelect: (preset: DemoWalletPreset) => void;
   onSampleSocial: () => void;
   onAnalyze: () => void;
@@ -27,9 +30,11 @@ export function WalletInput({
   walletAddress,
   xHandle,
   socialText,
+  tasteQuiz,
   onWalletChange,
   onXHandleChange,
   onSocialChange,
+  onTasteQuizChange,
   onDemoSelect,
   onSampleSocial,
   onAnalyze,
@@ -82,12 +87,12 @@ export function WalletInput({
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f5b942]/15 text-sm font-bold text-[#f5b942] ring-1 ring-[#f5b942]/30">
           1
         </span>
-        <p className="section-label text-stone-500">Wallet + optional social</p>
+        <p className="section-label text-stone-500">Wallet + taste signals</p>
       </div>
       <p className="mt-2 text-sm text-stone-400">
         <strong className="font-medium text-stone-200">Wallet is required.</strong>{" "}
-        X handle and pasted tweets/bio are optional — they sharpen recommendations
-        but analysis works without them.
+        Use the quick taste form, X bio, or pasted tweets — any combination
+        pairs with your wallet history for analysis.
       </p>
 
       <DemoWalletChips
@@ -170,6 +175,12 @@ export function WalletInput({
       {bioError && (
         <p className="mt-2 text-xs text-amber-400/90">{bioError}</p>
       )}
+
+      <TasteQuickForm
+        selectedOptionIds={tasteQuiz}
+        onChange={onTasteQuizChange}
+        disabled={disabled || isRunning}
+      />
 
       <label className="mt-4 block text-xs font-medium text-[#f5b942]/90">
         Social taste signals <span className="text-stone-600">(optional)</span>

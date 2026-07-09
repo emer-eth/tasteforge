@@ -9,6 +9,7 @@ const bodySchema = z.object({
   walletAddress: z.string().min(42).max(42),
   socialText: z.string().max(2000).optional(),
   xHandle: z.string().max(50).optional(),
+  tasteQuiz: z.array(z.string().max(40)).max(20).optional(),
   stream: z.boolean().optional(),
   skipCache: z.boolean().optional(),
 });

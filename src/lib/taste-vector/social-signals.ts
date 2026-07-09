@@ -107,6 +107,27 @@ const KEYWORD_RULES: Array<{
     dimensions: { investment_mindset: 0.8 },
     tags: ["market-aware"],
   },
+  {
+    pattern: /\b(personal collection|passion collector)\b/i,
+    dimensions: { nostalgia: 0.75, community_social: 0.55 },
+    tags: ["enthusiast"],
+    emotions: ["joy"],
+  },
+  {
+    pattern: /\b(display collector|community)\b/i,
+    dimensions: { community_social: 0.8, narrative_depth: 0.6 },
+    tags: ["community"],
+  },
+  {
+    pattern: /\b(balanced collector|flexible collector|open minded)\b/i,
+    dimensions: { bold_subtle: 0.5, vintage_modern: 0.5 },
+    tags: ["eclectic"],
+  },
+  {
+    pattern: /\b(single gem collector)\b/i,
+    dimensions: { artistic_craft: 0.8, rarity_appreciation: 0.7 },
+    tags: ["gem-focused"],
+  },
 ];
 
 export function parseSocialTasteSignals(

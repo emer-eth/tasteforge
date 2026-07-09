@@ -12,10 +12,11 @@ const analysisCache = new Map<string, CacheEntry>();
 
 export function buildAnalysisCacheKey(input: AnalyzeInput): string {
   const raw = [
-    "v2-vision",
+    "v3-quiz",
     input.walletAddress?.trim().toLowerCase() ?? "",
     input.socialText?.trim() ?? "",
     input.xHandle?.trim().toLowerCase() ?? "",
+    (input.tasteQuiz ?? []).slice().sort().join(","),
   ].join("|");
 
   return createHash("sha256").update(raw).digest("hex").slice(0, 24);

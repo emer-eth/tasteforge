@@ -9,7 +9,8 @@ interface CollectorProfileProps {
 }
 
 export function CollectorProfile({ data }: CollectorProfileProps) {
-  const { profile, collection, socialSignals, visionAnalysis } = data;
+  const { profile, collection, socialSignals, tasteQuizLabels, visionAnalysis } =
+    data;
   const [showHoldings, setShowHoldings] = useState(false);
 
   return (
@@ -61,7 +62,12 @@ export function CollectorProfile({ data }: CollectorProfileProps) {
                   : "Non-holder"}
             </p>
           )}
-          <p>{socialSignals?.length ?? 0} social signals</p>
+          <p>
+            {socialSignals?.length ?? 0} taste signals
+            {tasteQuizLabels?.length
+              ? ` · ${tasteQuizLabels.length} quiz picks`
+              : ""}
+          </p>
           <p>{collection.length} holdings</p>
         </div>
       </div>
@@ -96,9 +102,27 @@ export function CollectorProfile({ data }: CollectorProfileProps) {
         </div>
       )}
 
+      {tasteQuizLabels && tasteQuizLabels.length > 0 && (
+        <div className="panel-violet mb-4 rounded-xl p-3">
+          <p className="section-label mb-2 text-violet-300">
+            Quick taste profile
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {tasteQuizLabels.map((label) => (
+              <span
+                key={label}
+                className="badge-violet px-2.5 py-1 text-xs"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {socialSignals && socialSignals.length > 0 && (
         <div className="panel-gold mb-4 rounded-xl p-3">
-          <p className="section-label mb-2 text-[#f5b942]">Social taste signals</p>
+          <p className="section-label mb-2 text-[#f5b942]">Taste signals</p>
           <div className="flex flex-wrap gap-2">
             {socialSignals.map((signal) => (
               <span

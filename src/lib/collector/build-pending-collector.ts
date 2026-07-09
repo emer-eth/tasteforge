@@ -1,5 +1,6 @@
 import { resolveCollectorMode } from "@/lib/collector/activity-history";
 import { normalizeXHandle } from "@/lib/collector/x-handle";
+import { mergeTasteInputs } from "@/lib/taste-quiz/merge-inputs";
 import type { CollectorData } from "@/lib/types";
 
 export function parseSocialFragments(text: string): string[] {
@@ -14,17 +15,21 @@ export function buildPendingCollectorData(
   walletAddress: string,
   socialText: string,
   xHandleInput?: string,
+  tasteQuiz?: string[],
 ): CollectorData {
-  const socialSignals = parseSocialFragments(socialText);
+  const { socialSignals, quizLabels } = mergeTasteInputs(socialText, tasteQuiz);
   const xHandle = normalizeXHandle(xHandleInput);
   const short = `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`;
 
   const bioParts = [`Ready to analyze wallet ${short}.`];
   if (xHandle) bioParts.push(`X: @${xHandle} (optional — paste bio/tweets below).`);
+  if (quizLabels.length > 0) {
+    bioParts.push(`Quick taste profile: ${quizLabels.length} pick${quizLabels.length === 1 ? "" : "s"}.`);
+  }
   if (socialSignals.length > 0) {
-    bioParts.push(`${socialSignals.length} social taste signal${socialSignals.length === 1 ? "" : "s"} ready.`);
-  } else if (!xHandle) {
-    bioParts.push("Social taste is optional.");
+    bioParts.push(`${socialSignals.length} taste signal${socialSignals.length === 1 ? "" : "s"} ready.`);
+  } else if (!xHandle && quizLabels.length === 0) {
+    bioParts.push("Social taste is optional — try the quick form below.");
   }
 
   return {
@@ -44,6 +49,7 @@ export function buildPendingCollectorData(
     interactions: [],
     activityHistory: [],
     socialSignals: socialSignals.length > 0 ? socialSignals : undefined,
+    tasteQuizLabels: quizLabels.length > 0 ? quizLabels : undefined,
     collectorMode: resolveCollectorMode(0, socialSignals.length),
   };
 }

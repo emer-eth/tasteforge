@@ -5,6 +5,7 @@ export interface DemoWalletPreset {
   walletAddress: string;
   socialText?: string;
   xHandle?: string;
+  tasteQuiz?: string[];
 }
 
 export const DEMO_WALLET_PRESETS: DemoWalletPreset[] = [
@@ -39,6 +40,20 @@ export const DEMO_WALLET_PRESETS: DemoWalletPreset[] = [
     walletAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
     socialText:
       "vintage Japanese PSA 10, Charizard hunter, bargains under FMV, full-art illustrations",
+  },
+  {
+    id: "quiet-poster",
+    label: "Quiet poster · quiz",
+    description: "No X posts — quick taste form only",
+    walletAddress: "0x56efe774d232cdf76b44f2b1fcec49ab0a0b77f5",
+    tasteQuiz: [
+      "era-vintage",
+      "drive-grade",
+      "drive-art",
+      "style-bold",
+      "personality-enthusiast",
+      "char-charizard",
+    ],
   },
 ];
 

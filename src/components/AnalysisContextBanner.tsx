@@ -1,8 +1,10 @@
 import { normalizeXHandle, xProfileUrl } from "@/lib/collector/x-handle";
+import { countTasteInputs } from "@/lib/taste-quiz/merge-inputs";
 
 interface AnalysisContextBannerProps {
   walletAddress: string;
   socialText: string;
+  tasteQuiz?: string[];
   xHandle?: string;
   analyzedWallet?: string;
   holdingsCount?: number;
@@ -14,6 +16,7 @@ interface AnalysisContextBannerProps {
 export function AnalysisContextBanner({
   walletAddress,
   socialText,
+  tasteQuiz,
   xHandle,
   analyzedWallet,
   holdingsCount,
@@ -21,10 +24,7 @@ export function AnalysisContextBanner({
   isRunning,
   isStale,
 }: AnalysisContextBannerProps) {
-  const socialCount = socialText
-    .split(/[\n,.;]+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 2).length;
+  const tasteCounts = countTasteInputs(socialText, tasteQuiz);
 
   const short = (addr: string) =>
     `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -42,7 +42,11 @@ export function AnalysisContextBanner({
           Reading on-chain access
           {handleLabel && ` · ${handleLabel}`}
           {" · "}
-          {socialCount} social signal{socialCount === 1 ? "" : "s"} · scoring
+          {tasteCounts.totalSignals} taste signal
+          {tasteCounts.totalSignals === 1 ? "" : "s"}
+          {tasteCounts.quizCount > 0 &&
+            ` (${tasteCounts.quizCount} quiz)`}{" "}
+          · scoring
           live Renaiss catalog
         </p>
       </div>
@@ -78,7 +82,10 @@ export function AnalysisContextBanner({
             </>
           )}
           {" · "}
-          {socialCount} social signal{socialCount === 1 ? "" : "s"}
+          {tasteCounts.totalSignals} taste signal
+          {tasteCounts.totalSignals === 1 ? "" : "s"}
+          {tasteCounts.quizCount > 0 &&
+            ` · ${tasteCounts.quizCount} quiz pick${tasteCounts.quizCount === 1 ? "" : "s"}`}
           {holdingsCount != null &&
             ` · ${holdingsCount} holding${holdingsCount === 1 ? "" : "s"}`}
           {" · "}full marketplace recommendations (no ownership required)
@@ -110,7 +117,11 @@ export function AnalysisContextBanner({
         Analyze Taste will use this address
         {handleLabel && ` + ${handleLabel}`}
         {" + "}
-        {socialCount || "your"} social signal{socialCount === 1 ? "" : "s"} to
+        {tasteCounts.totalSignals || "your"} taste signal
+        {tasteCounts.totalSignals === 1 ? "" : "s"}
+        {tasteCounts.quizCount > 0 &&
+          ` (${tasteCounts.quizCount} quiz)`}{" "}
+        to
         recommend cards from Renaiss.
       </p>
     </div>

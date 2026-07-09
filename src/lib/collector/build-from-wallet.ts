@@ -1,6 +1,6 @@
 import { resolveCollectorMode } from "@/lib/collector/activity-history";
-import { parseSocialFragments } from "@/lib/collector/build-pending-collector";
 import { normalizeXHandle } from "@/lib/collector/x-handle";
+import { mergeTasteInputs } from "@/lib/taste-quiz/merge-inputs";
 import type { CollectorData, WalletHoldings } from "@/lib/types";
 
 /** Merge wallet access + social taste into agent-ready collector data */
@@ -8,8 +8,9 @@ export function buildCollectorFromWallet(
   holdings: WalletHoldings,
   socialText?: string,
   xHandleInput?: string,
+  tasteQuiz?: string[],
 ): CollectorData {
-  const socialSignals = parseSocialFragments(socialText ?? "");
+  const { socialSignals, quizLabels } = mergeTasteInputs(socialText, tasteQuiz);
   const xHandle = normalizeXHandle(xHandleInput);
 
   const statedPreferences = [
@@ -22,10 +23,15 @@ export function buildCollectorFromWallet(
     socialSignals.length,
   );
 
+  const quizNote =
+    quizLabels.length > 0
+      ? ` + quick taste profile (${quizLabels.length} picks)`
+      : "";
+
   const bio =
     collectorMode === "non-holder" || collectorMode === "social-only"
-      ? `Non-holder wallet — recommendations powered by social taste${socialSignals.length ? ` (${socialSignals.length} signals)` : ""} across the full Renaiss catalog.`
-      : `Holder (${holdings.holdings.length} cards) + social taste — best picks from the full marketplace, not only owned cards.`;
+      ? `Non-holder wallet — recommendations powered by social taste${socialSignals.length ? ` (${socialSignals.length} signals)` : ""}${quizNote} across the full Renaiss catalog.`
+      : `Holder (${holdings.holdings.length} cards) + taste signals${quizNote} — best picks from the full marketplace, not only owned cards.`;
 
   return {
     profile: {
@@ -41,6 +47,7 @@ export function buildCollectorFromWallet(
     interactions: holdings.interactions,
     activityHistory: holdings.activityHistory,
     socialSignals: socialSignals.length > 0 ? socialSignals : undefined,
+    tasteQuizLabels: quizLabels.length > 0 ? quizLabels : undefined,
     collectorMode,
   };
 }

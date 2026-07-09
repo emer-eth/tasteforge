@@ -286,9 +286,14 @@ function buildSignalAnalysis(
         ? "ornate, detail-rich work"
         : "balanced visual complexity";
 
+  const quizNote =
+    data.tasteQuizLabels?.length
+      ? `Quick taste profile: ${data.tasteQuizLabels.slice(0, 4).join(", ")}. `
+      : "";
+
   const socialNote =
     socialWeight > 0.3
-      ? `Social taste signals (${(socialWeight * 100).toFixed(0)}% confidence) strongly anchor recommendations — ` +
+      ? `Taste signals (${(socialWeight * 100).toFixed(0)}% confidence) anchor recommendations — ` +
         `${data.socialSignals?.slice(0, 2).join("; ") ?? "stated preferences"}. `
       : "";
 
@@ -304,6 +309,7 @@ function buildSignalAnalysis(
 
   return (
     `${visionNote}` +
+    `${quizNote}` +
     `${socialNote}` +
     `${data.profile.displayName}'s collector profile favors ${lean} with ` +
     `${dims.warm_cool > 0.5 ? "cool" : "warm"} tonal palettes. ` +
