@@ -18,22 +18,28 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://tasteforge.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "TasteForge — Renaiss Taste Vector Engine",
   description:
     "AI agent that builds a collector Taste Vector from wallet + social signals and recommends the best Renaiss cards for taste and value.",
   openGraph: {
     title: "TasteForge — Renaiss Taste Vector Engine",
     description:
-      "Live Renaiss marketplace analysis: taste vector, Best Overall, Best Value, and consecutive pairs.",
+      "Wallet + taste → personalized Renaiss card recommendations. Live marketplace, vision on card art, Best Overall & Best Value.",
     type: "website",
     siteName: "TasteForge",
+    url: siteUrl,
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "TasteForge — Renaiss Taste Vector Engine",
     description:
-      "Wallet + social taste → personalized Renaiss card recommendations.",
+      "Wallet + taste → personalized Renaiss card recommendations.",
   },
 };
 
