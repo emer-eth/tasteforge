@@ -429,21 +429,21 @@ export function TasteForgeDemo() {
             </span>
           </div>
           <h2 className="headline mt-4 text-3xl sm:text-4xl lg:text-[3.25rem]">
-            <span className="text-stone-50">Wallet + social →</span>
+            <span className="text-stone-50">Wallet + taste →</span>
             <br />
             <span className="text-gradient-brand">your best Renaiss cards.</span>
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-400 sm:text-base">
             Real analysis on every run — live marketplace, on-chain wallet scan,
-            and optional social taste. Share a link with judges for an instant
-            demo.
+            optional X/social or quick form. Share a link with judges for an
+            instant demo.
           </p>
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: "Listings scored", value: "~150" },
               { label: "Analysis modes", value: "LLM + Live" },
-              { label: "Collector paths", value: "Holder · Social" },
+              { label: "Collector paths", value: "Holder · Quiz · Social" },
               { label: "Pairs engine", value: "Serial match" },
             ].map((stat) => (
               <div key={stat.label} className="hero-stat">
@@ -549,10 +549,10 @@ export function TasteForgeDemo() {
         ) : (
           <div className="empty-state flex min-h-[320px] items-center justify-center p-8 text-center">
             <div>
-              <p className="text-sm font-medium text-zinc-400">
+              <p className="text-sm font-medium text-stone-400">
                 {isStale ? "Results out of date" : "No Taste Vector yet"}
               </p>
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-stone-500">
                 {isStale
                   ? "Wallet or taste path changed — click Analyze Taste again."
                   : "Enter wallet, pick X/social or quick form (optional), then click Analyze Taste."}

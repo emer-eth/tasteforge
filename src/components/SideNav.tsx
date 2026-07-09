@@ -137,10 +137,10 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             type="button"
             onClick={() => handleClick(item)}
             title={item.label}
-            className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#0a090d]/90 px-2 py-2 text-xs font-medium text-stone-400 shadow-lg backdrop-blur-md transition-all ${
+            className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#15120d]/90 px-2 py-2 text-xs font-medium text-stone-400 shadow-lg backdrop-blur-md transition-all ${
               active === item.id
                 ? item.id === "analyze"
-                  ? "border-[#c9a961]/50 bg-[#c9a961]/15 text-[#c9a961] shadow-[0_0_24px_-4px_rgba(245,185,66,0.35)]"
+                  ? "border-[#c9a961]/50 bg-[#c9a961]/15 text-[#c9a961] shadow-[0_0_24px_-4px_rgba(201,169,97,0.35)]"
                   : item.id === "presentation"
                     ? "border-[#c9a961]/40 bg-[#c9a961]/10 text-[#c9a961]"
                     : "border-white/20 bg-white/10 text-stone-200"
@@ -159,7 +159,7 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
 
       {/* Mobile — bottom bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-white/[0.08] bg-[#0a090d]/95 px-2 py-2 backdrop-blur-xl lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-white/[0.08] bg-[#15120d]/95 px-2 py-2 backdrop-blur-xl lg:hidden"
         aria-label="Page sections"
       >
         {visibleItems.map((item) => (
