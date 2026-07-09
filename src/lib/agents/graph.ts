@@ -38,6 +38,7 @@ async function analyzeSignals(
       `${SIGNAL_ANALYSIS_PROMPT}\n\n` +
         `Profile: ${JSON.stringify(profile, null, 2)}\n\n` +
         `Social Signals: ${JSON.stringify(socialSignals ?? profile.statedPreferences)}\n\n` +
+        `Vision Analysis (card artwork): ${JSON.stringify(state.collectorData.visionAnalysis ?? null)}\n\n` +
         `Owned: ${JSON.stringify(collection.map((c) => ({ title: c.title, tags: c.aestheticTags, artist: c.artist })))}\n\n` +
         `Interactions: ${JSON.stringify(interactions)}`,
     ),
@@ -85,6 +86,11 @@ async function generateTasteVector(
     ),
     interactions: JSON.stringify(interactions, null, 2),
     signalAnalysis: state.signalAnalysis,
+    visionAnalysis: JSON.stringify(
+      state.collectorData.visionAnalysis ?? null,
+      null,
+      2,
+    ),
   });
 
   const response = await model.invoke([
@@ -97,10 +103,16 @@ async function generateTasteVector(
       ? response.content
       : JSON.stringify(response.content);
 
+  const visionEnriched = Boolean(
+    state.collectorData.visionAnalysis &&
+      state.collectorData.visionAnalysis.weight > 0,
+  );
+
   const parsed = parseLLMTasteVector(
     content,
     state.collectorId,
     state.signalAnalysis,
+    visionEnriched,
   );
 
   if (parsed) {

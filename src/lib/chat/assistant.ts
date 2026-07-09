@@ -77,7 +77,13 @@ const FAQ: FaqEntry[] = [
     keywords: ["taste", "vector", "archetype", "dimensions", "profile", "fingerprint"],
     patterns: [/taste vector|taste archetype|what.*archetype/i],
     answer:
-      "Your **taste vector** is a 10-axis fingerprint — vintage vs modern, value vs rarity, nostalgia, etc. Your **taste archetype** is the plain label (e.g. *Vintage Hunter*, *Value Sniper*). It's built from wallet holdings + optional social text. Scroll to the taste vector panel after **Analyze Taste** to see dimension bars and tags.",
+      "Your **taste vector** is a 10-axis fingerprint — vintage vs modern, value vs rarity, nostalgia, etc. Your **taste archetype** is the plain label (e.g. *Vintage Hunter*, *Value Sniper*). It's built from wallet holdings + optional social text + **vision analysis** of held card artwork when images are available. Scroll to the taste vector panel after **Analyze Taste** to see dimension bars and tags.",
+  },
+  {
+    keywords: ["vision", "multimodal", "image", "artwork", "visual", "photo", "picture"],
+    patterns: [/vision|multimodal|card image|artwork|visual taste/i],
+    answer:
+      "For **holders**, TasteForge sends up to **3 held card images** to a vision model (Gemini via Blink) during analysis. It reads actual artwork — color palette, composition, nostalgia cues — not just card titles. Results appear in **Visual taste (multimodal)** on the collector profile and boost the taste vector (**Vision + taste** badge). Non-holders skip this step.",
   },
   {
     keywords: ["best", "overall", "value", "recommend", "pick", "suggest", "buy"],
@@ -113,7 +119,7 @@ const FAQ: FaqEntry[] = [
     keywords: ["preview", "analyze", "difference", "button", "click"],
     patterns: [/preview wallet|analyze taste|difference between/i],
     answer:
-      "**Preview wallet** = quick check (BNB balance + Renaiss holdings count). No recommendations.\n\n**Analyze Taste** = full agent run: on-chain scan → taste vector → score live catalog → recommendations + pairs. Run this for your presentation demo.",
+      "**Preview wallet** = quick check (BNB balance + Renaiss holdings count). No recommendations.\n\n**Analyze Taste** = full agent run: on-chain scan → **vision analysis of held card artwork** (when images exist) → taste vector → score live catalog → recommendations + pairs. Run this for your presentation demo.",
   },
   {
     keywords: ["stale", "changed", "outdated", "update", "again"],
@@ -131,7 +137,7 @@ const FAQ: FaqEntry[] = [
     keywords: ["long", "slow", "time", "wait", "seconds"],
     patterns: [/how long|take.*time|slow|loading/i],
     answer:
-      "Analysis usually takes **a few seconds** — wallet scan, taste vector, scoring ~150 live listings, and explanations. Holders with large collections may take slightly longer. Watch the **Agent Pipeline** steps while it runs.",
+      "Analysis usually takes **a few seconds** — wallet scan, optional **vision pass** on up to 3 held card images, taste vector, scoring ~150 live listings, and explanations. Holders with large collections may take slightly longer. Watch the **Agent Pipeline** steps while it runs.",
   },
   {
     keywords: ["activity", "history", "trade", "hold", "transaction"],
@@ -143,7 +149,7 @@ const FAQ: FaqEntry[] = [
     keywords: ["presentation", "demo", "hackathon", "show", "pitch"],
     patterns: [/presentation|demo|hackathon|showcase|pitch/i],
     answer:
-      "**Demo flow:**\n1. `0x378ffaaf220ac102ea5c29bddcff1a16a2cab731` — big holder, rich results\n2. Show taste archetype + **Best Overall** + preview modal\n3. `0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045` + social text — non-holder path\n\nSample social text: *vintage Japanese PSA 10, Charizard hunter, bargains under FMV*",
+      "**Demo flow:**\n1. `0x378ffaaf220ac102ea5c29bddcff1a16a2cab731` — big holder, rich results\n2. Show **Visual taste (multimodal)** panel + **Vision + taste** badge on taste vector\n3. Show taste archetype + **Best Overall** + preview modal\n4. `0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045` + social text — non-holder path (no vision)\n\nSample social text: *vintage Japanese PSA 10, Charizard hunter, bargains under FMV*",
   },
   {
     keywords: ["error", "fail", "broken", "not working", "issue"],

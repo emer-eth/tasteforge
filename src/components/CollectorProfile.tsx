@@ -9,7 +9,7 @@ interface CollectorProfileProps {
 }
 
 export function CollectorProfile({ data }: CollectorProfileProps) {
-  const { profile, collection, socialSignals } = data;
+  const { profile, collection, socialSignals, visionAnalysis } = data;
   const [showHoldings, setShowHoldings] = useState(false);
 
   return (
@@ -67,6 +67,34 @@ export function CollectorProfile({ data }: CollectorProfileProps) {
       </div>
 
       <p className="mb-4 text-sm leading-relaxed text-zinc-300">{profile.bio}</p>
+
+      {visionAnalysis && visionAnalysis.analyzedCards.length > 0 && (
+        <div className="panel-violet mb-4 rounded-xl p-3">
+          <p className="section-label mb-2 text-violet-300">
+            Visual taste (multimodal)
+          </p>
+          <p className="mb-3 text-xs leading-relaxed text-stone-400">
+            {visionAnalysis.summary}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {visionAnalysis.analyzedCards.map((card) => (
+              <div
+                key={card.tokenId}
+                className="flex items-center gap-2 rounded-lg border border-violet-500/20 bg-black/30 px-2 py-1.5"
+              >
+                <img
+                  src={card.imageUrl}
+                  alt=""
+                  className="h-12 w-9 rounded object-cover"
+                />
+                <span className="max-w-[140px] truncate text-[10px] text-stone-300">
+                  {card.title}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {socialSignals && socialSignals.length > 0 && (
         <div className="panel-gold mb-4 rounded-xl p-3">

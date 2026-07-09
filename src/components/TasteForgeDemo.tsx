@@ -183,7 +183,7 @@ export function TasteForgeDemo() {
 
           if (event.type === "result" && event.result) {
             setResult(event.result);
-            setActiveStep(7);
+            setActiveStep(8);
             if (input.updateUrl !== false) {
               syncUrl({
                 walletAddress: input.walletAddress,

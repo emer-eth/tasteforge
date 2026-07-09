@@ -24,15 +24,22 @@ export function TasteVectorDisplay({
             </p>
           )}
         </div>
-        <span
-          className={`rounded-full px-2.5 py-1 text-xs ${
-            processingMode === "llm"
-              ? "badge-live px-2.5 py-1"
-              : "badge-gold px-2.5 py-1"
-          }`}
-        >
-          {processingMode === "llm" ? "LLM analysis" : "Live analysis"}
-        </span>
+        <div className="flex flex-wrap gap-1.5 justify-end">
+          {tasteVector.visionEnriched && (
+            <span className="badge-violet px-2.5 py-1 text-xs">
+              Vision + taste
+            </span>
+          )}
+          <span
+            className={`rounded-full px-2.5 py-1 text-xs ${
+              processingMode === "llm"
+                ? "badge-live px-2.5 py-1"
+                : "badge-gold px-2.5 py-1"
+            }`}
+          >
+            {processingMode === "llm" ? "LLM analysis" : "Live analysis"}
+          </span>
+        </div>
       </div>
 
       <p className="mb-4 text-sm leading-relaxed text-zinc-200">

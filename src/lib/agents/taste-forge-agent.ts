@@ -7,6 +7,7 @@ import { buildCollectorFromWallet } from "@/lib/collector/build-from-wallet";
 import { fetchWalletHoldings } from "@/lib/chain/wallet-holdings";
 import { getRecommendationCatalog } from "@/lib/renaiss/catalog";
 import { getConsecutivePairs, scorePairs } from "@/lib/renaiss/pairs";
+import { analyzeHoldingsVision } from "@/lib/taste-vector/vision-taste";
 import type {
   AnalyzeInput,
   CardRecommendation,
@@ -17,6 +18,7 @@ import type {
 
 export type AnalysisProgressStep =
   | "holdings"
+  | "visionTaste"
   | "catalog"
   | "analyzeSignals"
   | "generateTasteVector"
@@ -37,23 +39,28 @@ export const ANALYSIS_PROGRESS_STEPS: AnalysisProgressEvent[] = [
     stepIndex: 0,
     label: "Scanning wallet & Renaiss holdings",
   },
-  { step: "catalog", stepIndex: 1, label: "Loading live marketplace catalog" },
-  { step: "analyzeSignals", stepIndex: 2, label: "Analyzing taste signals" },
-  { step: "generateTasteVector", stepIndex: 3, label: "Building taste vector" },
-  { step: "scoreCatalog", stepIndex: 4, label: "Scoring live listings" },
+  {
+    step: "visionTaste",
+    stepIndex: 1,
+    label: "Analyzing card artwork (vision)",
+  },
+  { step: "catalog", stepIndex: 2, label: "Loading live marketplace catalog" },
+  { step: "analyzeSignals", stepIndex: 3, label: "Analyzing taste signals" },
+  { step: "generateTasteVector", stepIndex: 4, label: "Building taste vector" },
+  { step: "scoreCatalog", stepIndex: 5, label: "Scoring live listings" },
   {
     step: "explainRecommendations",
-    stepIndex: 5,
+    stepIndex: 6,
     label: "Writing card explanations",
   },
-  { step: "pairs", stepIndex: 6, label: "Matching consecutive pairs" },
+  { step: "pairs", stepIndex: 7, label: "Matching consecutive pairs" },
 ];
 
 const GRAPH_STEP_INDEX: Record<string, number> = {
-  analyzeSignals: 2,
-  generateTasteVector: 3,
-  scoreCatalog: 4,
-  explainRecommendations: 5,
+  analyzeSignals: 3,
+  generateTasteVector: 4,
+  scoreCatalog: 5,
+  explainRecommendations: 6,
 };
 
 let compiledGraph: ReturnType<typeof buildTasteForgeGraph> | null = null;
@@ -116,7 +123,7 @@ export async function runTasteForgeAgent(
     if (cached) {
       options?.onProgress?.({
         step: "cached",
-        stepIndex: 7,
+        stepIndex: 8,
         label: "Loaded cached analysis",
       });
       return cached;
@@ -128,6 +135,14 @@ export async function runTasteForgeAgent(
   emitProgress(options?.onProgress, "holdings");
   const { data: collectorData, walletAddress } =
     await resolveCollectorData(input);
+
+  emitProgress(options?.onProgress, "visionTaste");
+  const visionAnalysis = await analyzeHoldingsVision(
+    collectorData.collection,
+  );
+  if (visionAnalysis) {
+    collectorData.visionAnalysis = visionAnalysis;
+  }
 
   emitProgress(options?.onProgress, "catalog");
   const { catalog, source: catalogSource } = await getRecommendationCatalog({

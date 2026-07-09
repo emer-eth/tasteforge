@@ -49,6 +49,9 @@ export const TASTE_VECTOR_USER_PROMPT = `Generate a Taste Vector for this collec
 ## Social Taste Signals (PRIMARY)
 {socialSignals}
 
+## Vision Analysis — card artwork (multimodal, when present)
+{visionAnalysis}
+
 ## Owned Cards (supporting — may be empty)
 {ownedCards}
 

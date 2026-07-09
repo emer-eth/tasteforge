@@ -115,7 +115,21 @@ export function generateTasteVectorDeterministic(
   data: CollectorData,
 ): TasteVector {
   const socialParsed = parseSocialTasteSignals(data.socialSignals);
+  const vision = data.visionAnalysis;
   const weightedSignals: Array<{ dims: TasteDimensions; weight: number }> = [];
+
+  // Vision — multimodal artwork analysis of held cards
+  if (vision && vision.weight > 0) {
+    const visionDims = mergeDimensions(
+      NEUTRAL_DIMENSIONS,
+      vision.dimensions,
+      0.72,
+    );
+    weightedSignals.push({
+      dims: visionDims,
+      weight: 1.15 * vision.weight,
+    });
+  }
 
   // Social signals — primary when wallet is empty or sparse
   if (socialParsed.weight > 0) {
@@ -170,6 +184,7 @@ export function generateTasteVectorDeterministic(
   ];
 
   const aestheticTags = [
+    ...(vision?.aestheticTags ?? []),
     ...socialParsed.aestheticTags,
     ...extractTags(positiveCards),
     ...data.profile.statedPreferences
@@ -179,6 +194,7 @@ export function generateTasteVectorDeterministic(
   ].slice(0, 10);
 
   const emotionalTags = [
+    ...(vision?.emotionalTags ?? []),
     ...socialParsed.emotionalTags,
     ...new Set(positiveCards.flatMap((c) => c.emotionalTags)),
   ].slice(0, 8);
@@ -192,12 +208,25 @@ export function generateTasteVectorDeterministic(
   };
 
   const colorPalette =
-    positiveCards.length > 0
-      ? extractColors(positiveCards)
-      : ["#1a1a2e", "#c9a227", "#e94560"];
+    vision?.colorPalette?.length
+      ? vision.colorPalette
+      : positiveCards.length > 0
+        ? extractColors(positiveCards)
+        : ["#1a1a2e", "#c9a227", "#e94560"];
 
-  const signalAnalysis = buildSignalAnalysis(data, dimensions, socialParsed.weight);
-  const summary = buildTasteSummary(data, dimensions, aestheticTags, socialParsed.weight);
+  const signalAnalysis = buildSignalAnalysis(
+    data,
+    dimensions,
+    socialParsed.weight,
+    vision?.weight ?? 0,
+  );
+  const summary = buildTasteSummary(
+    data,
+    dimensions,
+    aestheticTags,
+    socialParsed.weight,
+    vision,
+  );
 
   const signalCount =
     (data.socialSignals?.length ?? 0) +
@@ -220,7 +249,10 @@ export function generateTasteVectorDeterministic(
       0.95,
       isNonHolder && socialAnchored
         ? 0.72 + socialParsed.weight * 0.2
-        : 0.4 + socialParsed.weight * 0.35 + signalCount * 0.025,
+        : 0.4 +
+          socialParsed.weight * 0.35 +
+          (vision?.weight ?? 0) * 0.15 +
+          signalCount * 0.025,
     ),
     signalAnalysis,
     tasteArchetype: deriveTasteArchetype({
@@ -228,6 +260,7 @@ export function generateTasteVectorDeterministic(
       aestheticTags: [...new Set(aestheticTags)],
     }),
     generatedAt: new Date().toISOString(),
+    visionEnriched: Boolean(vision && vision.weight > 0),
   };
 }
 
@@ -235,6 +268,7 @@ function buildSignalAnalysis(
   data: CollectorData,
   dims: TasteDimensions,
   socialWeight: number,
+  visionWeight: number,
 ): string {
   const passed = data.interactions
     .filter((i) => i.type === "passed")
@@ -258,12 +292,18 @@ function buildSignalAnalysis(
         `${data.socialSignals?.slice(0, 2).join("; ") ?? "stated preferences"}. `
       : "";
 
+  const visionNote =
+    visionWeight > 0 && data.visionAnalysis
+      ? `Visual analysis of ${data.visionAnalysis.analyzedCards.length} held card image${data.visionAnalysis.analyzedCards.length === 1 ? "" : "s"} (${(visionWeight * 100).toFixed(0)}% confidence): ${data.visionAnalysis.summary} `
+      : "";
+
   const holdingsNote =
     data.collection.length > 0
       ? `${data.collection.length} on-chain holdings reinforce the profile. `
       : "Recommendations lean on wallet identity + social taste — not just current holdings. ";
 
   return (
+    `${visionNote}` +
     `${socialNote}` +
     `${data.profile.displayName}'s collector profile favors ${lean} with ` +
     `${dims.warm_cool > 0.5 ? "cool" : "warm"} tonal palettes. ` +
@@ -278,17 +318,20 @@ function buildTasteSummary(
   dims: TasteDimensions,
   tags: string[],
   socialWeight: number,
+  vision?: CollectorData["visionAnalysis"],
 ): string {
   const era = dims.vintage_modern > 0.6 ? "contemporary" : "vintage-leaning";
   const mood = dims.bold_subtle < 0.4 ? "quiet and contemplative" : "bold and expressive";
   const tagStr = tags.slice(0, 3).join(", ") || "curated picks";
 
   const source =
-    socialWeight > 0.3 && data.collection.length === 0
-      ? "From your wallet + social signals, we recommend"
-      : socialWeight > 0.3
-        ? "Blending your wallet, social taste, and holdings, you gravitate toward"
-        : "You gravitate toward";
+    vision && vision.weight > 0
+      ? "From your card artwork, wallet, and taste signals, you gravitate toward"
+      : socialWeight > 0.3 && data.collection.length === 0
+        ? "From your wallet + social signals, we recommend"
+        : socialWeight > 0.3
+          ? "Blending your wallet, social taste, and holdings, you gravitate toward"
+          : "You gravitate toward";
 
   return (
     `${source} ${era} cards with ${mood} energy — ` +
@@ -301,6 +344,7 @@ export function parseLLMTasteVector(
   raw: string,
   collectorId: string,
   signalAnalysis: string,
+  visionEnriched = false,
 ): TasteVector | null {
   try {
     const cleaned = raw.replace(/```json\n?|\n?```/g, "").trim();
@@ -322,6 +366,7 @@ export function parseLLMTasteVector(
         aestheticTags: parsed.aestheticTags ?? [],
       }),
       generatedAt: new Date().toISOString(),
+      visionEnriched,
     };
   } catch {
     return null;

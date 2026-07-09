@@ -93,6 +93,17 @@ export interface CollectorActivityEvent {
 
 export type CollectorMode = "holder" | "non-holder" | "social-only";
 
+/** Multimodal vision analysis of held card artwork */
+export interface VisionTasteAnalysis {
+  analyzedCards: Array<{ title: string; tokenId: string; imageUrl: string }>;
+  summary: string;
+  dimensions: Partial<TasteDimensions>;
+  aestheticTags: string[];
+  emotionalTags: string[];
+  colorPalette: string[];
+  weight: number;
+}
+
 export interface CollectorData {
   profile: CollectorProfile;
   collection: RenaissCard[];
@@ -101,6 +112,8 @@ export interface CollectorData {
   activityHistory?: CollectorActivityEvent[];
   /** Optional social / X text used to enrich taste signals */
   socialSignals?: string[];
+  /** Blink vision analysis of held card images */
+  visionAnalysis?: VisionTasteAnalysis;
   /** Whether recommendations require existing holdings */
   collectorMode?: CollectorMode;
 }
@@ -143,6 +156,8 @@ export interface TasteVector {
   signalAnalysis: string;
   tasteArchetype: string;
   generatedAt: string;
+  /** True when card images were analyzed via vision model */
+  visionEnriched?: boolean;
 }
 
 export interface ScoredCandidate {

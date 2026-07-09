@@ -12,6 +12,7 @@ const analysisCache = new Map<string, CacheEntry>();
 
 export function buildAnalysisCacheKey(input: AnalyzeInput): string {
   const raw = [
+    "v2-vision",
     input.walletAddress?.trim().toLowerCase() ?? "",
     input.socialText?.trim() ?? "",
     input.xHandle?.trim().toLowerCase() ?? "",
