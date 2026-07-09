@@ -4,6 +4,11 @@ import type {
   TasteDimensions,
   TasteVector,
 } from "@/lib/types";
+import {
+  buildValueInsight,
+  computeOverallScore,
+  computeValueScore,
+} from "@/lib/taste-vector/value-scorer";
 
 const DIMENSION_KEYS = Object.keys({
   vintage_modern: 0,
@@ -56,6 +61,16 @@ export function tagOverlap(
   };
 }
 
+export function emotionalOverlap(
+  tasteEmotions: string[],
+  cardEmotions: string[],
+): number {
+  if (tasteEmotions.length === 0) return 0.3;
+  const tasteSet = new Set(tasteEmotions.map((e) => e.toLowerCase()));
+  const matches = cardEmotions.filter((e) => tasteSet.has(e.toLowerCase()));
+  return matches.length / Math.max(tasteEmotions.length, 1);
+}
+
 export function subjectAffinityScore(
   affinities: Record<string, number>,
   subject: string,
@@ -82,12 +97,16 @@ export function computeDimensionAlignment(
 
 export interface ScoredCard {
   card: RenaissCard;
-  score: number;
+  resonanceScore: number;
+  valueScore: number;
+  overallScore: number;
   alignment: Partial<TasteDimensions>;
   matchingTags: string[];
+  valueInsight: string;
 }
 
-export function scoreCardAgainstTaste(
+/** Resonance = pure taste match (no price bias) */
+export function scoreCardResonance(
   card: RenaissCard,
   tasteVector: TasteVector,
 ): ScoredCard {
@@ -96,32 +115,39 @@ export function scoreCardAgainstTaste(
     tasteVector.aestheticTags,
     card.aestheticTags,
   );
+  const emotionScore = emotionalOverlap(
+    tasteVector.emotionalTags,
+    card.emotionalTags,
+  );
   const subjectScore = subjectAffinityScore(
     tasteVector.subjectAffinities,
     card.subject,
   );
-  const artistBonus = tasteVector.aestheticTags.some((t) =>
-    card.artist.toLowerCase().includes(t.toLowerCase()),
-  )
-    ? 0.05
-    : 0;
 
-  const score =
-    dimScore * 0.55 +
-    tagScore * 0.25 +
-    subjectScore * 0.15 +
-    artistBonus +
-    RARITY_SCORE[card.rarity] * tasteVector.dimensions.rarity_appreciation * 0.05;
+  const resonanceScore = Math.min(
+    1,
+    dimScore * 0.5 +
+      tagScore * 0.2 +
+      subjectScore * 0.15 +
+      emotionScore * 0.1 +
+      RARITY_SCORE[card.rarity] * tasteVector.dimensions.rarity_appreciation * 0.05,
+  );
+
+  const valueScore = computeValueScore(card, resonanceScore);
+  const overallScore = computeOverallScore(resonanceScore, valueScore);
 
   return {
     card,
-    score: Math.min(1, score),
+    resonanceScore,
+    valueScore,
+    overallScore,
     alignment: computeDimensionAlignment(tasteVector.dimensions, card.dimensions),
     matchingTags: matching,
+    valueInsight: buildValueInsight(card),
   };
 }
 
-export function rankRecommendations(
+export function rankByOverall(
   catalog: RenaissCard[],
   tasteVector: TasteVector,
   ownedIds: Set<string>,
@@ -129,7 +155,31 @@ export function rankRecommendations(
 ): ScoredCard[] {
   return catalog
     .filter((card) => !ownedIds.has(card.id))
-    .map((card) => scoreCardAgainstTaste(card, tasteVector))
-    .sort((a, b) => b.score - a.score)
+    .map((card) => scoreCardResonance(card, tasteVector))
+    .sort((a, b) => b.overallScore - a.overallScore)
     .slice(0, limit);
+}
+
+export function rankByValue(
+  catalog: RenaissCard[],
+  tasteVector: TasteVector,
+  ownedIds: Set<string>,
+  limit = 5,
+): ScoredCard[] {
+  return catalog
+    .filter((card) => !ownedIds.has(card.id))
+    .map((card) => scoreCardResonance(card, tasteVector))
+    .filter((s) => s.resonanceScore >= 0.35)
+    .sort((a, b) => b.valueScore - a.valueScore)
+    .slice(0, limit);
+}
+
+/** @deprecated use rankByOverall */
+export function rankRecommendations(
+  catalog: RenaissCard[],
+  tasteVector: TasteVector,
+  ownedIds: Set<string>,
+  limit = 5,
+): ScoredCard[] {
+  return rankByOverall(catalog, tasteVector, ownedIds, limit);
 }

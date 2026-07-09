@@ -21,10 +21,20 @@ interface CardArtProps {
 export function CardArt({ card, className = "" }: CardArtProps) {
   const pattern = CARD_PATTERNS[card.id] ?? "";
   const bg = `linear-gradient(145deg, ${card.colorPalette[0]} 0%, ${card.colorPalette[1] ?? card.colorPalette[0]} 45%, ${card.colorPalette[2] ?? "#111"} 100%)`;
+  const hasLiveImage = card.imageUrl.startsWith("http");
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      <div className="absolute inset-0" style={{ background: bg }} />
+      {hasLiveImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={card.imageUrl}
+          alt={card.title}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0" style={{ background: bg }} />
+      )}
       {pattern && (
         <div
           className="absolute inset-0 opacity-90"

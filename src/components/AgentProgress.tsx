@@ -1,55 +1,83 @@
-export const AGENT_STEPS = [
-  { id: "analyze", label: "Analyzing signals" },
-  { id: "vector", label: "Building Taste Vector" },
-  { id: "score", label: "Scoring catalog" },
-  { id: "explain", label: "Writing explanations" },
-] as const;
+import { ANALYSIS_PROGRESS_STEPS } from "@/lib/agents/taste-forge-agent";
 
 interface AgentProgressProps {
   activeStep: number;
   isRunning: boolean;
+  statusLabel?: string;
 }
 
-export function AgentProgress({ activeStep, isRunning }: AgentProgressProps) {
+export function AgentProgress({
+  activeStep,
+  isRunning,
+  statusLabel,
+}: AgentProgressProps) {
+  const totalSteps = ANALYSIS_PROGRESS_STEPS.length;
+  const progressPct = Math.min(
+    100,
+    Math.round(((activeStep + (isRunning ? 0.35 : 1)) / totalSteps) * 100),
+  );
+
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5">
-      <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">
-        Agent Pipeline
-      </p>
-      <div className="space-y-3">
-        {AGENT_STEPS.map((step, index) => {
-          const isDone = !isRunning && activeStep >= AGENT_STEPS.length;
-          const isActive = isRunning && index === activeStep;
-          const isComplete = isDone || (!isRunning && index < activeStep) || (isRunning && index < activeStep);
+    <div className="panel panel-violet animate-in overflow-hidden p-5 sm:p-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="section-label text-violet-300/80">Agent Pipeline</p>
+          {statusLabel && (
+            <p className="mt-1 text-sm text-stone-200">{statusLabel}</p>
+          )}
+        </div>
+        <span className="badge-violet px-3 py-1 text-xs font-medium">
+          {progressPct}%
+        </span>
+      </div>
+
+      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+        <div
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{
+            width: `${progressPct}%`,
+            background:
+              "linear-gradient(90deg, var(--teal), var(--gold), var(--coral))",
+          }}
+        />
+      </div>
+
+      <div className="mt-5 space-y-1">
+        {ANALYSIS_PROGRESS_STEPS.map((step) => {
+          const isActive = isRunning && activeStep === step.stepIndex;
+          const isComplete =
+            !isRunning && activeStep >= totalSteps
+              ? true
+              : step.stepIndex < activeStep;
 
           return (
-            <div key={step.id} className="flex items-center gap-3">
+            <div
+              key={step.step}
+              className={`progress-step flex items-center gap-3 py-1.5 ${
+                isComplete ? "is-complete" : ""
+              } ${isActive ? "is-active" : ""}`}
+            >
               <div
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                className={`progress-dot flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                   isComplete
-                    ? "bg-emerald-500/20 text-emerald-400"
+                    ? "bg-teal-500/20 text-teal-300 ring-1 ring-teal-500/35"
                     : isActive
-                      ? "bg-amber-500/20 text-amber-400 ring-2 ring-amber-500/40"
-                      : "bg-zinc-800 text-zinc-600"
+                      ? "bg-[#f5b942]/20 text-[#f5b942] ring-2 ring-[#f5b942]/45"
+                      : "bg-white/5 text-stone-600"
                 }`}
               >
-                {isComplete ? "✓" : index + 1}
+                {isComplete ? "✓" : step.stepIndex + 1}
               </div>
               <span
                 className={`text-sm ${
                   isActive
-                    ? "font-medium text-zinc-100"
+                    ? "font-medium text-stone-100"
                     : isComplete
-                      ? "text-zinc-400"
-                      : "text-zinc-600"
+                      ? "text-stone-400"
+                      : "text-stone-600"
                 }`}
               >
                 {step.label}
-                {isActive && (
-                  <span className="ml-2 inline-block animate-pulse text-amber-400">
-                    ...
-                  </span>
-                )}
               </span>
             </div>
           );
@@ -58,3 +86,5 @@ export function AgentProgress({ activeStep, isRunning }: AgentProgressProps) {
     </div>
   );
 }
+
+export { ANALYSIS_PROGRESS_STEPS as AGENT_STEPS };

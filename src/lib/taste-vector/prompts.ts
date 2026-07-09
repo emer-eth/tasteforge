@@ -15,12 +15,17 @@ Your job is to infer a collector's "Taste Vector" — a 10-dimensional aesthetic
 - investment_mindset: 0 = pure taste/emotion, 1 = investment/floor-price aware
 
 ## Signal Weighting
-- owned cards: strongest signal (1.0)
+- social signals (X bio, collector notes, stated taste): PRIMARY anchor (1.0–1.3)
+- wallet identity + on-chain access: validates collector context
+- owned cards: supporting signal (0.75) — do NOT over-index on holdings alone
 - wishlisted: strong intent (0.8)
 - liked: positive affinity (0.7)
 - long views (>30s dwell): moderate interest (0.5)
 - passed: negative signal — infer what they reject (0.3 inverse)
 - stated preferences & bio: anchor the vector
+
+Collectors may be HOLDERS or NON-HOLDERS — ownership is NOT required for recommendations.
+Recommendations must be scored against the FULL live marketplace catalog — find the best cards FOR this collector, not just cards like what they already own.
 
 Be precise. Avoid defaulting to 0.5. Differentiate dimensions meaningfully.
 Return ONLY valid JSON matching the requested schema.`;
@@ -41,7 +46,10 @@ export const TASTE_VECTOR_USER_PROMPT = `Generate a Taste Vector for this collec
 ## Collector Profile
 {profile}
 
-## Owned Cards
+## Social Taste Signals (PRIMARY)
+{socialSignals}
+
+## Owned Cards (supporting — may be empty)
 {ownedCards}
 
 ## Interactions
@@ -65,6 +73,7 @@ Return JSON with this exact structure:
     "investment_mindset": number
   },
   "aestheticTags": ["tag1", "tag2", ...],
+  "emotionalTags": ["contemplative", "nostalgia", ...],
   "subjectAffinities": { "subject": 0.0-1.0, ... },
   "colorPalette": ["#hex", ...],
   "summary": "2-3 sentence taste profile in second person ('You gravitate toward...')",

@@ -1,58 +1,114 @@
+"use client";
+
+import { useState } from "react";
 import type { CardRecommendation } from "@/lib/types";
-import { CardArt } from "@/components/CardArt";
+import { CardDisplay } from "@/components/CardDisplay";
+import { CardPreviewModal } from "@/components/CardPreviewModal";
 import { MatchHighlights } from "@/components/MatchHighlights";
 
 interface RecommendationCardProps {
   recommendation: CardRecommendation;
   rank: number;
+  section?: "best-overall" | "best-value";
 }
 
 export function RecommendationCard({
   recommendation,
   rank,
+  section,
 }: RecommendationCardProps) {
-  const { card, resonanceScore, matchingTags, explanation, whyNow, dimensionAlignment } =
-    recommendation;
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const {
+    card,
+    resonanceScore,
+    valueScore,
+    matchingTags,
+    explanation,
+    whyNow,
+    valueInsight,
+    dimensionAlignment,
+  } = recommendation;
+
+  const buyUrl = `https://www.renaiss.xyz/card/${card.tokenId}`;
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 transition-colors hover:border-zinc-600">
-      <div className="relative aspect-[3/4]">
-        <CardArt card={card} className="h-full w-full" />
-        <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950/80 text-sm font-bold text-amber-400 backdrop-blur">
-          #{rank}
-        </div>
-        <div className="absolute left-3 top-3 rounded-full bg-zinc-950/80 px-2.5 py-1 text-xs font-semibold text-emerald-400 backdrop-blur">
-          {(resonanceScore * 100).toFixed(0)}% match
-        </div>
-      </div>
-
-      <div className="p-4">
-        <MatchHighlights alignment={dimensionAlignment} />
-
-        <p className="mb-3 mt-3 text-sm leading-relaxed text-zinc-300">
-          {explanation}
-        </p>
-
-        {matchingTags.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-1">
-            {matchingTags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-400"
-              >
-                {tag}
-              </span>
-            ))}
+    <>
+      <article className="panel card-rec overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
+          className="group relative block w-full cursor-zoom-in text-left"
+          aria-label={`Preview ${card.title}`}
+        >
+          <CardDisplay
+            card={card}
+            resonanceScore={resonanceScore}
+            valueScore={valueScore}
+            rank={rank}
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
+            <span className="scale-90 rounded-full border border-white/30 bg-zinc-950/80 px-4 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur transition-all group-hover:scale-100 group-hover:opacity-100">
+              Preview card
+            </span>
           </div>
-        )}
+        </button>
 
-        <div className="flex items-start justify-between gap-3 border-t border-zinc-800 pt-3">
-          <p className="text-xs leading-relaxed text-amber-400/90">{whyNow}</p>
-          <span className="shrink-0 text-xs font-medium text-zinc-400">
-            ${card.floorPrice}
-          </span>
+        <div className="p-4">
+          <MatchHighlights alignment={dimensionAlignment} />
+
+          <p className="mb-2 mt-3 text-xs font-medium text-sky-400/90">
+            {valueInsight}
+          </p>
+
+          <p className="mb-3 text-sm leading-relaxed text-zinc-300">
+            {explanation}
+          </p>
+
+          {matchingTags.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1">
+              {matchingTags.map((tag) => (
+                <span key={tag} className="tag-pill tag-pill-gold">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="mb-3 border-t border-zinc-800 pt-3">
+            <p className="text-xs leading-relaxed text-amber-400/90">{whyNow}</p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => setPreviewOpen(true)}
+              className="btn-ghost flex-1 !py-2.5 !text-sm"
+            >
+              Preview
+            </button>
+            <a
+              href={buyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-cta flex-1 !py-2.5 text-center !text-sm"
+            >
+              Buy on Renaiss ↗
+            </a>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+
+      <CardPreviewModal
+        card={card}
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        rank={rank}
+        section={section}
+        resonanceScore={resonanceScore}
+        valueScore={valueScore}
+        valueInsight={valueInsight}
+        explanation={explanation}
+      />
+    </>
   );
 }

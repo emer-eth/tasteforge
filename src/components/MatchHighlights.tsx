@@ -13,7 +13,7 @@ export function MatchHighlights({ alignment }: MatchHighlightsProps) {
       {top.map(({ label, score }) => (
         <span
           key={label}
-          className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-300"
+          className="badge-live inline-flex items-center gap-1 px-2 py-0.5 text-[10px]"
         >
           <span className="font-medium">{label}</span>
           <span className="text-emerald-400/70">{(score * 100).toFixed(0)}%</span>

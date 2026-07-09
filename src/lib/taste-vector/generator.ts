@@ -1,11 +1,15 @@
 import type {
   CollectorData,
   CollectorInteraction,
+  RenaissCard,
   TasteDimensions,
   TasteVector,
 } from "@/lib/types";
-import { getCardById } from "@/lib/data/mock-renaiss";
 import { deriveTasteArchetype } from "@/lib/taste-vector/dimensions";
+import {
+  mergeDimensions,
+  parseSocialTasteSignals,
+} from "@/lib/taste-vector/social-signals";
 
 const DIMENSION_KEYS: (keyof TasteDimensions)[] = [
   "vintage_modern",
@@ -29,9 +33,32 @@ const INTERACTION_WEIGHTS: Record<CollectorInteraction["type"], number> = {
   passed: -0.35,
 };
 
+const NEUTRAL_DIMENSIONS: TasteDimensions = {
+  vintage_modern: 0.5,
+  minimalist_ornate: 0.5,
+  bold_subtle: 0.5,
+  warm_cool: 0.5,
+  rarity_appreciation: 0.55,
+  narrative_depth: 0.5,
+  artistic_craft: 0.6,
+  nostalgia: 0.45,
+  community_social: 0.5,
+  investment_mindset: 0.55,
+};
+
+function resolveCard(
+  cardId: string,
+  collection: RenaissCard[],
+): RenaissCard | undefined {
+  return collection.find((c) => c.id === cardId);
+}
+
 function weightedAverage(
   values: Array<{ dims: TasteDimensions; weight: number }>,
+  fallback: TasteDimensions,
 ): TasteDimensions {
+  if (values.length === 0) return fallback;
+
   const result = {} as TasteDimensions;
   for (const key of DIMENSION_KEYS) {
     let sum = 0;
@@ -41,15 +68,14 @@ function weightedAverage(
       sum += dims[key] * Math.abs(weight);
       weightSum += Math.abs(weight);
     }
-    result[key] = weightSum > 0 ? sum / weightSum : 0.5;
+    result[key] = weightSum > 0 ? sum / weightSum : fallback[key];
   }
   return result;
 }
 
-function extractTags(cards: ReturnType<typeof getCardById>[]): string[] {
+function extractTags(cards: RenaissCard[]): string[] {
   const tagCounts = new Map<string, number>();
   for (const card of cards) {
-    if (!card) continue;
     for (const tag of card.aestheticTags) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
@@ -60,22 +86,20 @@ function extractTags(cards: ReturnType<typeof getCardById>[]): string[] {
     .map(([tag]) => tag);
 }
 
-function extractColors(cards: ReturnType<typeof getCardById>[]): string[] {
+function extractColors(cards: RenaissCard[]): string[] {
   const colors = new Set<string>();
   for (const card of cards) {
-    if (!card) continue;
     card.colorPalette.slice(0, 2).forEach((c) => colors.add(c));
   }
   return [...colors].slice(0, 6);
 }
 
 function extractSubjectAffinities(
-  cards: ReturnType<typeof getCardById>[],
+  cards: RenaissCard[],
 ): Record<string, number> {
   const counts = new Map<string, number>();
   let total = 0;
   for (const card of cards) {
-    if (!card) continue;
     counts.set(card.subject, (counts.get(card.subject) ?? 0) + 1);
     total++;
   }
@@ -86,14 +110,45 @@ function extractSubjectAffinities(
   return affinities;
 }
 
-/** Deterministic fallback — no API key required. Great for hackathon demos. */
+/** Deterministic fallback — wallet + social + holdings signals, no API key required */
 export function generateTasteVectorDeterministic(
   data: CollectorData,
 ): TasteVector {
+  const socialParsed = parseSocialTasteSignals(data.socialSignals);
   const weightedSignals: Array<{ dims: TasteDimensions; weight: number }> = [];
 
+  // Social signals — primary when wallet is empty or sparse
+  if (socialParsed.weight > 0) {
+    const socialDims = mergeDimensions(
+      NEUTRAL_DIMENSIONS,
+      socialParsed.dimensions,
+      0.75,
+    );
+    weightedSignals.push({
+      dims: socialDims,
+      weight: 1.3 * socialParsed.weight,
+    });
+  }
+
+  // Stated preferences from profile (includes parsed social fragments)
+  if (data.profile.statedPreferences.length > 0) {
+    const prefParsed = parseSocialTasteSignals(data.profile.statedPreferences);
+    if (prefParsed.weight > 0) {
+      weightedSignals.push({
+        dims: mergeDimensions(NEUTRAL_DIMENSIONS, prefParsed.dimensions, 0.65),
+        weight: 0.9,
+      });
+    }
+  }
+
+  // Owned holdings — supporting signal, not the only source
+  for (const card of data.collection) {
+    weightedSignals.push({ dims: card.dimensions, weight: 0.75 });
+  }
+
+  // Behavioral interactions (wishlist, likes, passes)
   for (const interaction of data.interactions) {
-    const card = getCardById(interaction.cardId);
+    const card = resolveCard(interaction.cardId, data.collection);
     if (!card) continue;
 
     let weight = INTERACTION_WEIGHTS[interaction.type];
@@ -104,14 +159,18 @@ export function generateTasteVectorDeterministic(
     weightedSignals.push({ dims: card.dimensions, weight });
   }
 
-  const dimensions = weightedAverage(weightedSignals);
+  const dimensions = weightedAverage(weightedSignals, NEUTRAL_DIMENSIONS);
 
-  const positiveCards = data.interactions
-    .filter((i) => i.type !== "passed")
-    .map((i) => getCardById(i.cardId))
-    .filter(Boolean);
+  const positiveCards = [
+    ...data.collection,
+    ...data.interactions
+      .filter((i) => i.type !== "passed")
+      .map((i) => resolveCard(i.cardId, data.collection))
+      .filter((c): c is RenaissCard => Boolean(c)),
+  ];
 
   const aestheticTags = [
+    ...socialParsed.aestheticTags,
     ...extractTags(positiveCards),
     ...data.profile.statedPreferences
       .flatMap((p) => p.split(" "))
@@ -119,36 +178,55 @@ export function generateTasteVectorDeterministic(
       .slice(0, 3),
   ].slice(0, 10);
 
+  const emotionalTags = [
+    ...socialParsed.emotionalTags,
+    ...new Set(positiveCards.flatMap((c) => c.emotionalTags)),
+  ].slice(0, 8);
+
   const subjectAffinities = {
     ...extractSubjectAffinities(positiveCards),
+    ...socialParsed.subjectAffinities,
     ...Object.fromEntries(
       data.profile.favoriteSubjects.map((s) => [s, 0.85]),
     ),
   };
 
-  const colorPalette = extractColors(positiveCards);
+  const colorPalette =
+    positiveCards.length > 0
+      ? extractColors(positiveCards)
+      : ["#1a1a2e", "#c9a227", "#e94560"];
 
-  const ownedArtists = new Set(data.collection.map((c) => c.artist));
-  const wishlistCards = data.interactions
-    .filter((i) => i.type === "wishlisted")
-    .map((i) => getCardById(i.cardId))
-    .filter(Boolean);
+  const signalAnalysis = buildSignalAnalysis(data, dimensions, socialParsed.weight);
+  const summary = buildTasteSummary(data, dimensions, aestheticTags, socialParsed.weight);
 
-  const signalAnalysis = buildSignalAnalysis(data, dimensions);
+  const signalCount =
+    (data.socialSignals?.length ?? 0) +
+    data.collection.length +
+    data.interactions.length;
 
-  const summary = buildTasteSummary(data, dimensions, aestheticTags);
+  const isNonHolder = data.collection.length === 0;
+  const socialAnchored = socialParsed.weight > 0.3;
 
   return {
     id: `tv-${data.profile.id}-${Date.now()}`,
     collectorId: data.profile.id,
     dimensions,
     aestheticTags: [...new Set(aestheticTags)],
+    emotionalTags,
     subjectAffinities,
     colorPalette,
     summary,
-    confidence: Math.min(0.95, 0.55 + data.interactions.length * 0.03),
+    confidence: Math.min(
+      0.95,
+      isNonHolder && socialAnchored
+        ? 0.72 + socialParsed.weight * 0.2
+        : 0.4 + socialParsed.weight * 0.35 + signalCount * 0.025,
+    ),
     signalAnalysis,
-    tasteArchetype: deriveTasteArchetype(dimensions),
+    tasteArchetype: deriveTasteArchetype({
+      dimensions,
+      aestheticTags: [...new Set(aestheticTags)],
+    }),
     generatedAt: new Date().toISOString(),
   };
 }
@@ -156,10 +234,11 @@ export function generateTasteVectorDeterministic(
 function buildSignalAnalysis(
   data: CollectorData,
   dims: TasteDimensions,
+  socialWeight: number,
 ): string {
   const passed = data.interactions
     .filter((i) => i.type === "passed")
-    .map((i) => getCardById(i.cardId))
+    .map((i) => resolveCard(i.cardId, data.collection))
     .filter(Boolean);
 
   const avoids = passed.length
@@ -173,13 +252,24 @@ function buildSignalAnalysis(
         ? "ornate, detail-rich work"
         : "balanced visual complexity";
 
+  const socialNote =
+    socialWeight > 0.3
+      ? `Social taste signals (${(socialWeight * 100).toFixed(0)}% confidence) strongly anchor recommendations — ` +
+        `${data.socialSignals?.slice(0, 2).join("; ") ?? "stated preferences"}. `
+      : "";
+
+  const holdingsNote =
+    data.collection.length > 0
+      ? `${data.collection.length} on-chain holdings reinforce the profile. `
+      : "Recommendations lean on wallet identity + social taste — not just current holdings. ";
+
   return (
-    `${data.profile.displayName} consistently acquires ${lean} with ` +
+    `${socialNote}` +
+    `${data.profile.displayName}'s collector profile favors ${lean} with ` +
     `${dims.warm_cool > 0.5 ? "cool" : "warm"} tonal palettes. ` +
-    `Strongest signals come from ${data.collection.length} owned pieces by ` +
-    `${[...new Set(data.collection.map((c) => c.artist))].join(" and ")}. ` +
+    holdingsNote +
     `They actively avoid: ${avoids}. ` +
-    `Wishlist activity suggests appetite for ${dims.narrative_depth > 0.5 ? "conceptually layered" : "purely aesthetic"} additions.`
+    `Best picks are scored against the full live Renaiss marketplace catalog.`
   );
 }
 
@@ -187,17 +277,23 @@ function buildTasteSummary(
   data: CollectorData,
   dims: TasteDimensions,
   tags: string[],
+  socialWeight: number,
 ): string {
   const era = dims.vintage_modern > 0.6 ? "contemporary" : "vintage-leaning";
   const mood = dims.bold_subtle < 0.4 ? "quiet and contemplative" : "bold and expressive";
-  const tagStr = tags.slice(0, 3).join(", ");
+  const tagStr = tags.slice(0, 3).join(", ") || "curated picks";
+
+  const source =
+    socialWeight > 0.3 && data.collection.length === 0
+      ? "From your wallet + social signals, we recommend"
+      : socialWeight > 0.3
+        ? "Blending your wallet, social taste, and holdings, you gravitate toward"
+        : "You gravitate toward";
 
   return (
-    `You gravitate toward ${era} cards with ${mood} energy — ` +
-    `especially ${tagStr}. Your collection reads as a curated gallery of ` +
-    `${dims.artistic_craft > 0.6 ? "craft-forward" : "accessible"} work, ` +
-    `with ${dims.rarity_appreciation > 0.5 ? "an eye for scarcity" : "taste over floor price"} ` +
-    `guiding your acquisitions.`
+    `${source} ${era} cards with ${mood} energy — ` +
+    `especially ${tagStr}. TasteForge scores the full Renaiss marketplace to find ` +
+    `the best cards for you, not just what you already own.`
   );
 }
 
@@ -215,12 +311,16 @@ export function parseLLMTasteVector(
       collectorId,
       dimensions: parsed.dimensions,
       aestheticTags: parsed.aestheticTags ?? [],
+      emotionalTags: parsed.emotionalTags ?? [],
       subjectAffinities: parsed.subjectAffinities ?? {},
       colorPalette: parsed.colorPalette ?? [],
       summary: parsed.summary ?? "",
       confidence: parsed.confidence ?? 0.75,
       signalAnalysis,
-      tasteArchetype: deriveTasteArchetype(parsed.dimensions),
+      tasteArchetype: deriveTasteArchetype({
+        dimensions: parsed.dimensions,
+        aestheticTags: parsed.aestheticTags ?? [],
+      }),
       generatedAt: new Date().toISOString(),
     };
   } catch {

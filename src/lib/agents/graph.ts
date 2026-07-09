@@ -6,7 +6,8 @@ import {
   generateTasteVectorDeterministic,
   parseLLMTasteVector,
 } from "@/lib/taste-vector/generator";
-import { rankRecommendations } from "@/lib/taste-vector/scorer";
+import { rankByOverall, rankByValue } from "@/lib/taste-vector/scorer";
+import type { ScoredCandidate } from "@/lib/types";
 import {
   TASTE_VECTOR_SYSTEM_PROMPT,
   SIGNAL_ANALYSIS_PROMPT,
@@ -27,7 +28,8 @@ async function analyzeSignals(
     };
   }
 
-  const { profile, collection, interactions } = state.collectorData;
+  const { profile, collection, interactions, socialSignals } =
+    state.collectorData;
 
   const model = createChatModel({ temperature: 0.4 });
   const response = await model.invoke([
@@ -35,6 +37,7 @@ async function analyzeSignals(
     new HumanMessage(
       `${SIGNAL_ANALYSIS_PROMPT}\n\n` +
         `Profile: ${JSON.stringify(profile, null, 2)}\n\n` +
+        `Social Signals: ${JSON.stringify(socialSignals ?? profile.statedPreferences)}\n\n` +
         `Owned: ${JSON.stringify(collection.map((c) => ({ title: c.title, tags: c.aestheticTags, artist: c.artist })))}\n\n` +
         `Interactions: ${JSON.stringify(interactions)}`,
     ),
@@ -58,11 +61,17 @@ async function generateTasteVector(
     };
   }
 
-  const { profile, collection, interactions } = state.collectorData;
+  const { profile, collection, interactions, socialSignals } =
+    state.collectorData;
 
   const model = createChatModel({ temperature: 0.2 });
   const userPrompt = formatPrompt(TASTE_VECTOR_USER_PROMPT, {
     profile: JSON.stringify(profile, null, 2),
+    socialSignals: JSON.stringify(
+      socialSignals ?? profile.statedPreferences ?? [],
+      null,
+      2,
+    ),
     ownedCards: JSON.stringify(
       collection.map((c) => ({
         title: c.title,
@@ -116,14 +125,62 @@ async function scoreCatalog(
     state.collectorData.collection.map((c) => c.id),
   );
 
-  const scored = rankRecommendations(
-    state.catalog,
-    state.tasteVector,
-    ownedIds,
-    5,
-  );
+  return {
+    scoredCandidates: rankByOverall(
+      state.catalog,
+      state.tasteVector,
+      ownedIds,
+      5,
+    ),
+    bestValueCandidates: rankByValue(
+      state.catalog,
+      state.tasteVector,
+      ownedIds,
+      5,
+    ),
+  };
+}
 
-  return { scoredCandidates: scored };
+function uniqueCandidates(
+  overall: ScoredCandidate[],
+  value: ScoredCandidate[],
+): ScoredCandidate[] {
+  const seen = new Set<string>();
+  const merged: ScoredCandidate[] = [];
+  for (const c of [...overall, ...value]) {
+    if (!seen.has(c.card.id)) {
+      seen.add(c.card.id);
+      merged.push(c);
+    }
+  }
+  return merged;
+}
+
+function toRecommendation(
+  scored: ScoredCandidate,
+  taste: NonNullable<TasteForgeState["tasteVector"]>,
+  ownedIds: Set<string>,
+  explained?: { explanation: string; whyNow: string },
+): CardRecommendation {
+  return {
+    card: scored.card,
+    resonanceScore: scored.resonanceScore,
+    valueScore: scored.valueScore,
+    overallScore: scored.overallScore,
+    dimensionAlignment: scored.alignment,
+    matchingTags: scored.matchingTags,
+    valueInsight: scored.valueInsight,
+    explanation:
+      explained?.explanation ??
+      buildDeterministicExplanation(
+        scored.card.title,
+        scored.matchingTags,
+        scored.resonanceScore,
+        taste,
+      ),
+    whyNow:
+      explained?.whyNow ?? buildWhyNow(scored.card, ownedIds, taste),
+  };
 }
 
 async function explainRecommendations(
@@ -137,28 +194,22 @@ async function explainRecommendations(
     state.collectorData.collection.map((c) => c.id),
   );
 
+  const toExplain = uniqueCandidates(
+    state.scoredCandidates,
+    state.bestValueCandidates ?? [],
+  );
+
   if (!isLLMAvailable()) {
-    const recommendations: CardRecommendation[] = state.scoredCandidates.map(
-      (scored) => ({
-        card: scored.card,
-        resonanceScore: scored.score,
-        dimensionAlignment: scored.alignment,
-        matchingTags: scored.matchingTags,
-        explanation: buildDeterministicExplanation(
-          scored.card.title,
-          scored.matchingTags,
-          scored.score,
-          state.tasteVector!,
-        ),
-        whyNow: buildWhyNow(scored.card, ownedIds, state.tasteVector!),
-      }),
-    );
-    return { recommendations };
+    return {
+      recommendations: toExplain.map((scored) =>
+        toRecommendation(scored, state.tasteVector!, ownedIds),
+      ),
+    };
   }
 
   const model = createChatModel({ temperature: 0.5 });
 
-  const cardsPayload = state.scoredCandidates.map((scored) => ({
+  const cardsPayload = toExplain.map((scored) => ({
     cardId: scored.card.id,
     title: scored.card.title,
     artist: scored.card.artist,
@@ -166,7 +217,11 @@ async function explainRecommendations(
     tags: scored.card.aestheticTags,
     subject: scored.card.subject,
     rarity: scored.card.rarity,
-    resonanceScore: (scored.score * 100).toFixed(1) + "%",
+    floorPrice: scored.card.floorPrice,
+    fmv: scored.card.fmv,
+    resonanceScore: (scored.resonanceScore * 100).toFixed(1) + "%",
+    valueScore: (scored.valueScore * 100).toFixed(1) + "%",
+    valueInsight: scored.valueInsight,
     matchingTags: scored.matchingTags,
   }));
 
@@ -199,54 +254,29 @@ async function explainRecommendations(
       parsed.recommendations.map((r) => [r.cardId, r]),
     );
 
-    const recommendations: CardRecommendation[] = state.scoredCandidates.map(
-      (scored) => {
-        const explained = explanationMap.get(scored.card.id);
-        return {
-          card: scored.card,
-          resonanceScore: scored.score,
-          dimensionAlignment: scored.alignment,
-          matchingTags: scored.matchingTags,
-          explanation:
-            explained?.explanation ??
-            buildDeterministicExplanation(
-              scored.card.title,
-              scored.matchingTags,
-              scored.score,
-              state.tasteVector!,
-            ),
-          whyNow:
-            explained?.whyNow ??
-            buildWhyNow(scored.card, ownedIds, state.tasteVector!),
-        };
-      },
-    );
-
-    return { recommendations };
-  } catch {
-    const recommendations: CardRecommendation[] = state.scoredCandidates.map(
-      (scored) => ({
-        card: scored.card,
-        resonanceScore: scored.score,
-        dimensionAlignment: scored.alignment,
-        matchingTags: scored.matchingTags,
-        explanation: buildDeterministicExplanation(
-          scored.card.title,
-          scored.matchingTags,
-          scored.score,
+    return {
+      recommendations: toExplain.map((scored) =>
+        toRecommendation(
+          scored,
           state.tasteVector!,
+          ownedIds,
+          explanationMap.get(scored.card.id),
         ),
-        whyNow: buildWhyNow(scored.card, ownedIds, state.tasteVector!),
-      }),
-    );
-    return { recommendations };
+      ),
+    };
+  } catch {
+    return {
+      recommendations: toExplain.map((scored) =>
+        toRecommendation(scored, state.tasteVector!, ownedIds),
+      ),
+    };
   }
 }
 
 function buildDeterministicExplanation(
   title: string,
   matchingTags: string[],
-  score: number,
+  resonanceScore: number,
   taste: NonNullable<TasteForgeState["tasteVector"]>,
 ): string {
   const tagStr =
@@ -255,7 +285,7 @@ function buildDeterministicExplanation(
       : taste.aestheticTags.slice(0, 2).join(", ");
 
   return (
-    `"${title}" aligns with your taste at ${(score * 100).toFixed(0)}% resonance — ` +
+    `"${title}" aligns with your taste at ${(resonanceScore * 100).toFixed(0)}% resonance — ` +
     `sharing your affinity for ${tagStr}. ` +
     `It mirrors your preference for ${taste.dimensions.minimalist_ornate < 0.4 ? "clean, minimal" : "rich, detailed"} ` +
     `compositions and ${taste.dimensions.warm_cool > 0.5 ? "cool-toned" : "warm-toned"} palettes.`
@@ -267,14 +297,13 @@ function buildWhyNow(
   ownedIds: Set<string>,
   taste: NonNullable<TasteForgeState["tasteVector"]>,
 ): string {
-  const sameArtistOwned = [...ownedIds].some((id) => id.startsWith("rn-"));
   if (card.editionSize < 100) {
     return `Only ${card.editionSize} editions exist — scarcity matches your ${taste.dimensions.rarity_appreciation > 0.5 ? "grail-hunter" : "curator"} instincts.`;
   }
-  if (sameArtistOwned) {
-    return `Completes a series thread in your collection — acquiring now builds a coherent artist narrative.`;
+  if (ownedIds.size > 0) {
+    return `Complements your ${ownedIds.size} held card${ownedIds.size === 1 ? "" : "s"} — ${card.series} fits your live collection profile.`;
   }
-  return `Floor at $${card.floorPrice} with rising interest in ${card.series} — a strong entry before the series matures.`;
+  return `Listed at $${card.floorPrice} on Renaiss (FMV $${card.fmv}) — strong marketplace entry for your taste profile.`;
 }
 
 export function buildTasteForgeGraph() {

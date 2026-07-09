@@ -3,8 +3,17 @@ import type {
   CollectorInteraction,
   RenaissCard,
 } from "@/lib/types";
+import { enrichCard } from "@/lib/data/market-data";
 
-export const MOCK_CATALOG: RenaissCard[] = [
+/** Demo BNB wallets — paste these in the hackathon UI */
+export const DEMO_WALLET_MAYA =
+  "0x0000000000000000000000000000000000000001" as const;
+export const DEMO_WALLET_LUCA =
+  "0x0000000000000000000000000000000000000002" as const;
+export const DEMO_WALLET_JORDAN =
+  "0x0000000000000000000000000000000000000003" as const;
+
+const RAW_CATALOG = [
   {
     id: "rn-001",
     title: "Meridian Dawn",
@@ -279,6 +288,15 @@ export const MOCK_CATALOG: RenaissCard[] = [
   },
 ];
 
+type RawCard = Omit<
+  RenaissCard,
+  "fmv" | "liquidity" | "volume24h" | "tokenId" | "emotionalTags"
+>;
+
+export const MOCK_CATALOG: RenaissCard[] = (RAW_CATALOG as RawCard[]).map(
+  enrichCard,
+);
+
 const DEMO_COLLECTOR_INTERACTIONS: CollectorInteraction[] = [
   { cardId: "rn-001", type: "owned", timestamp: "2026-05-12T10:00:00Z" },
   { cardId: "rn-005", type: "owned", timestamp: "2026-06-01T14:30:00Z" },
@@ -310,6 +328,7 @@ export const MOCK_COLLECTOR: CollectorData = {
     ],
     favoriteArtists: ["Kai Volkov", "Hana Okonkwo"],
     favoriteSubjects: ["abstract landscape", "still life", "architecture"],
+    walletAddress: DEMO_WALLET_MAYA,
   },
   collection: MOCK_CATALOG.filter((c) =>
     ["rn-001", "rn-004", "rn-005"].includes(c.id),
@@ -346,6 +365,7 @@ export const MOCK_COLLECTOR_BAROQUE: CollectorData = {
     ],
     favoriteArtists: ["Elena Marchetti", "Dr. Amara Singh"],
     favoriteSubjects: ["portraiture", "scientific illustration"],
+    walletAddress: DEMO_WALLET_LUCA,
   },
   collection: MOCK_CATALOG.filter((c) =>
     ["rn-002", "rn-007"].includes(c.id),
@@ -382,6 +402,7 @@ export const MOCK_COLLECTOR_STREET: CollectorData = {
     ],
     favoriteArtists: ["DEX-7", "RetroFuture Co.", "SportsGraph"],
     favoriteSubjects: ["urban culture", "gaming nostalgia", "sports memorabilia"],
+    walletAddress: DEMO_WALLET_JORDAN,
   },
   collection: MOCK_CATALOG.filter((c) =>
     ["rn-003", "rn-006", "rn-010"].includes(c.id),
@@ -401,4 +422,15 @@ export function getCardById(id: string): RenaissCard | undefined {
 
 export function getCollectorData(collectorId: string): CollectorData | null {
   return MOCK_COLLECTORS.find((c) => c.profile.id === collectorId) ?? null;
+}
+
+export function getCollectorForWallet(
+  address: string,
+): CollectorData | null {
+  const normalized = address.toLowerCase();
+  return (
+    MOCK_COLLECTORS.find(
+      (c) => c.profile.walletAddress?.toLowerCase() === normalized,
+    ) ?? null
+  );
 }

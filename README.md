@@ -1,123 +1,112 @@
 # TasteForge
 
-**Renaiss Hackathon MVP** — An AI agent that builds a collector's **Taste Vector** from behavioral signals and surfaces high-resonance card recommendations with curator-style explanations.
+**Renaiss Hackathon MVP** — AI agent + web app that helps collectors find the best cards for their personal taste and money value.
 
-## Stack
+**Deadline:** July 11, 2026
 
-- **Next.js 16** + TypeScript + Tailwind CSS v4
-- **LangGraph** — 4-node agent pipeline
-- **LangChain + OpenAI/Grok** — LLM-powered analysis (deterministic fallback for demos)
-- Mock Renaiss catalog (Supabase-ready for persistence)
+## What it does
+
+1. Paste a **BNB wallet** (required) + optional **X handle** and **social taste text**
+2. Scan **live Renaiss marketplace** holdings and ~150 listings
+3. Build a **taste vector** + archetype (Blink LLM or deterministic fallback)
+4. Recommend **Best Overall** and **Best Value** with explanations
+5. Surface **consecutive serial pairs** matched to taste
+6. **Ask AI** guide with session context (top picks, share link)
+7. **Share URL** — `?wallet=0x…&social=…&analyze=1` for judge demos
 
 ## Quick Start
 
 ```bash
 cd tasteforge
 npm install
+cp .env.example .env.local   # add BLINK_API_KEY for LLM mode
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the interactive demo.
+Open **http://localhost:3000**
 
-**Demo flow:**
-1. Pick a collector (Maya, Luca, or Jordan)
-2. Click **Generate Taste Vector**
-3. Watch the 4-step agent pipeline
-4. Review taste archetype + recommendations
-
-### Enable LLM mode
+### LLM (Blink AI Gateway — recommended)
 
 ```bash
-cp .env.example .env.local
-# Add OPENAI_API_KEY or GROK_API_KEY / XAI_API_KEY
+# .env.local
+BLINK_API_KEY=blnk_ak_...
+BLINK_MODEL=xai/grok-4.1-fast-non-reasoning
+RENAISS_USE_LIVE=true
 ```
 
-Without an API key, the agent runs in **deterministic mode** — fully functional for hackathon demos.
+Uses `https://core.blink.new/api/v1/ai` (OpenAI-compatible). Also powers **Fetch bio via Blink** for X handles.
 
-## Agent Pipeline (LangGraph)
+Alternative: `OPENAI_API_KEY` or `GROK_API_KEY` / `XAI_API_KEY` (see `.env.example`).
+
+### Demo wallets (verified on-chain)
+
+| Label | Wallet |
+|-------|--------|
+| Big holder (62) | `0x378ffaaf220ac102ea5c29bddcff1a16a2cab731` |
+| Big holder (54) | `0xc0fe1b4bb133011fb7a5e8617fcb80e7b4edec6e` |
+| Medium (7) | `0x56efe774d232cdf76b44f2b1fcec49ab0a0b77f5` |
+| Small (1) | `0x269852797b01b5739c34bb478609312928c9ab89` |
+| Non-holder test | `0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045` + social text |
+
+Use **Quick demo wallets** chips in the UI.
+
+### Share link example
 
 ```
-START → analyzeSignals → generateTasteVector → scoreCatalog → explainRecommendations → END
+http://localhost:3000/?wallet=0x378ffaaf220ac102ea5c29bddcff1a16a2cab731&analyze=1
 ```
 
-| Node | Purpose |
-|------|---------|
-| `analyzeSignals` | LLM interprets collection + interaction patterns |
-| `generateTasteVector` | Produces 10-axis taste fingerprint |
-| `scoreCatalog` | Cosine similarity + tag/subject scoring |
-| `explainRecommendations` | Personal curator explanations per card |
-
-## API Routes
+## Deploy (Vercel)
 
 ```bash
-# Taste vector only
-GET /api/taste-vector?collectorId=collector-demo-01
-
-# Full recommendations
-GET /api/recommendations?collectorId=collector-demo-01
+npm run build
+npx vercel --prod
 ```
+
+Set env vars in Vercel dashboard: `BLINK_API_KEY`, `RENAISS_USE_LIVE=true`.
+
+## Renaiss integrations
+
+| Source | URL | Role |
+|--------|-----|------|
+| Marketplace API | [renaiss.xyz tRPC](https://www.renaiss.xyz/api/trpc/collectible.list) | Live FMV, prices, owner scan |
+| renaiss-scanner | [GitHub](https://github.com/blueskylh/renaiss-scanner) | Reference + pairs tool |
+| Scanner tool | [renaiss-tool](https://renaiss-tool-689931.napa.de5.net/) | Consecutive pairs |
+
+No Renaiss API key required.
+
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 16, TypeScript, Tailwind v4 |
+| Agent | LangGraph 4-node pipeline + real progress streaming |
+| Chain | viem — read-only BNB |
+| LLM | Blink Gateway / OpenAI / Grok |
+| Data | Live Renaiss only |
+
+## Features
+
+- One-click demo wallets + sample social text
+- Real agent progress (holdings → catalog → signals → vector → score → explain → pairs)
+- 10-minute analysis cache per wallet+social
+- Post-analysis refine filters (max price, vintage, PSA 10, below FMV)
+- Presentation summary card + copy share link
+- Ask AI with live session context (top pick explanations)
+- Optional Blink X bio fetch
 
 ## Project Structure
 
 ```
 src/
-├── app/
-│   ├── page.tsx                    # Demo homepage
-│   └── api/
-│       ├── taste-vector/route.ts
-│       └── recommendations/route.ts
-├── components/                     # UI components
-├── lib/
-│   ├── agents/
-│   │   ├── graph.ts                # LangGraph workflow
-│   │   ├── state.ts                # Agent state schema
-│   │   └── taste-forge-agent.ts    # Public agent entrypoint
-│   ├── data/mock-renaiss.ts        # Mock catalog + collector
-│   ├── llm/client.ts               # OpenAI / Grok client
-│   ├── taste-vector/
-│   │   ├── generator.ts            # Deterministic + LLM parser
-│   │   ├── scorer.ts               # Resonance scoring
-│   │   └── prompts.ts              # Agent prompts
-│   └── types/index.ts
+├── app/api/          analyze (NDJSON stream), chat, wallet, social/fetch-x
+├── components/       TasteForgeDemo, PresentationSummary, TasteAssistant, …
+├── lib/agents/       LangGraph taste pipeline
+├── lib/analysis/     cache + refine filters
+├── lib/renaiss/      marketplace, pairs, catalog
+└── lib/llm/          Blink / OpenAI / Grok client
 ```
 
-## Taste Vector Dimensions
+## License
 
-Each axis is scored 0.0–1.0:
-
-- `vintage_modern` · `minimalist_ornate` · `bold_subtle` · `warm_cool`
-- `rarity_appreciation` · `narrative_depth` · `artistic_craft`
-- `nostalgia` · `community_social` · `investment_mindset`
-
-## Demo Collectors
-
-| Collector | Handle | Taste Profile |
-|-----------|--------|---------------|
-| Maya Chen | `quiet_horizons` | Cool minimalism, landscapes |
-| Luca Fontaine | `gilded_archive` | Baroque grail hunter |
-| Jordan Reyes | `pixel_pilgrim` | Street culture + 90s nostalgia |
-
-## Deploy to Vercel
-
-**Repo:** https://github.com/emer-eth/tasteforge
-
-### Option A — Vercel Dashboard (fastest)
-
-1. Go to [vercel.com/new](https://vercel.com/new)
-2. Import `emer-eth/tasteforge`
-3. Click **Deploy** (no env vars required for demo mode)
-4. Optional: add `OPENAI_API_KEY` or `GROK_API_KEY` in Project Settings → Environment Variables for LLM mode
-
-### Option B — Vercel CLI
-
-```bash
-vercel login
-cd tasteforge
-vercel deploy --prod
-```
-
-## Next Steps
-
-- [ ] Supabase persistence for collectors + taste vectors
-- [ ] Vision layer (GPT-4o / CLIP) for card image analysis
-- [ ] Real Renaiss API integration
+Hackathon project — Renaiss ecosystem.

@@ -17,6 +17,10 @@ export const TasteForgeAnnotation = Annotation.Root({
     reducer: (_, next) => next,
     default: () => [],
   }),
+  bestValueCandidates: Annotation<AgentState["scoredCandidates"]>({
+    reducer: (_, next) => next,
+    default: () => [],
+  }),
   recommendations: Annotation<AgentState["recommendations"]>({
     reducer: (_, next) => next,
     default: () => [],

@@ -11,17 +11,15 @@ export function TasteVectorDisplay({
   processingMode,
 }: TasteVectorDisplayProps) {
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
+    <section className="panel panel-teal p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
-            Taste Vector
-          </p>
+          <p className="section-label text-zinc-500">Taste Vector</p>
           <p className="mt-1 text-sm text-zinc-400">
             {(tasteVector.confidence * 100).toFixed(0)}% confidence
           </p>
           {tasteVector.tasteArchetype && (
-            <p className="mt-1 text-xs font-medium text-amber-400/80">
+            <p className="headline mt-1 text-lg text-gradient-brand">
               {tasteVector.tasteArchetype}
             </p>
           )}
@@ -29,11 +27,11 @@ export function TasteVectorDisplay({
         <span
           className={`rounded-full px-2.5 py-1 text-xs ${
             processingMode === "llm"
-              ? "border border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border border-zinc-700 bg-zinc-800 text-zinc-400"
+              ? "badge-live px-2.5 py-1"
+              : "badge-gold px-2.5 py-1"
           }`}
         >
-          {processingMode === "llm" ? "LLM-powered" : "Deterministic demo"}
+          {processingMode === "llm" ? "LLM analysis" : "Live analysis"}
         </span>
       </div>
 
@@ -56,9 +54,9 @@ export function TasteVectorDisplay({
                   <span>{left}</span>
                   <span>{right}</span>
                 </div>
-                <div className="relative h-2 overflow-hidden rounded-full bg-zinc-800">
+                <div className="dim-track relative overflow-hidden">
                   <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-amber-500/80 to-rose-500/80"
+                    className="dim-fill absolute inset-y-0 left-0"
                     style={{ width: `${value * 100}%` }}
                   />
                   <div
@@ -73,10 +71,23 @@ export function TasteVectorDisplay({
       </div>
 
       <div className="flex flex-wrap gap-4">
+        {tasteVector.emotionalTags?.length > 0 && (
+          <div>
+            <p className="section-label mb-1.5 text-zinc-500">Emotional Layer</p>
+            <div className="flex flex-wrap gap-1.5">
+              {tasteVector.emotionalTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-rose-500/10 px-2 py-0.5 text-xs text-rose-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         <div>
-          <p className="mb-1.5 text-xs font-medium uppercase tracking-wider text-zinc-500">
-            Aesthetic Tags
-          </p>
+          <p className="section-label mb-1.5 text-zinc-500">Aesthetic Tags</p>
           <div className="flex flex-wrap gap-1.5">
             {tasteVector.aestheticTags.map((tag) => (
               <span
@@ -89,9 +100,7 @@ export function TasteVectorDisplay({
           </div>
         </div>
         <div>
-          <p className="mb-1.5 text-xs font-medium uppercase tracking-wider text-zinc-500">
-            Palette
-          </p>
+          <p className="section-label mb-1.5 text-zinc-500">Palette</p>
           <div className="flex gap-1">
             {tasteVector.colorPalette.map((color) => (
               <div
