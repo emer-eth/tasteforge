@@ -1,4 +1,5 @@
 import { parseSocialFragments } from "@/lib/collector/build-pending-collector";
+import type { TasteSourceMode } from "@/lib/taste-quiz/source-mode";
 import {
   quizSelectionsToLabels,
   quizSelectionsToSignals,
@@ -32,12 +33,16 @@ export function mergeTasteInputs(
 export function countTasteInputs(
   socialText?: string,
   quizOptionIds?: string[],
+  mode: TasteSourceMode = "none",
 ): { socialFragments: number; quizCount: number; totalSignals: number } {
-  const merged = mergeTasteInputs(socialText, quizOptionIds);
-  const textOnly = parseSocialFragments(socialText ?? "");
+  const social =
+    mode === "social" ? (socialText ?? "") : "";
+  const quiz = mode === "quiz" ? (quizOptionIds ?? []) : [];
+  const merged = mergeTasteInputs(social, quiz);
+  const textOnly = parseSocialFragments(social);
   return {
     socialFragments: textOnly.length,
-    quizCount: quizOptionIds?.length ?? 0,
+    quizCount: quiz.length,
     totalSignals: merged.socialSignals.length,
   };
 }

@@ -1,10 +1,12 @@
 import { normalizeXHandle, xProfileUrl } from "@/lib/collector/x-handle";
 import { countTasteInputs } from "@/lib/taste-quiz/merge-inputs";
+import type { TasteSourceMode } from "@/lib/taste-quiz/source-mode";
 
 interface AnalysisContextBannerProps {
   walletAddress: string;
   socialText: string;
   tasteQuiz?: string[];
+  tasteSource?: TasteSourceMode;
   xHandle?: string;
   analyzedWallet?: string;
   holdingsCount?: number;
@@ -17,6 +19,7 @@ export function AnalysisContextBanner({
   walletAddress,
   socialText,
   tasteQuiz,
+  tasteSource = "none",
   xHandle,
   analyzedWallet,
   holdingsCount,
@@ -24,7 +27,13 @@ export function AnalysisContextBanner({
   isRunning,
   isStale,
 }: AnalysisContextBannerProps) {
-  const tasteCounts = countTasteInputs(socialText, tasteQuiz);
+  const tasteCounts = countTasteInputs(socialText, tasteQuiz, tasteSource);
+  const tastePathLabel =
+    tasteSource === "social"
+      ? "X & social"
+      : tasteSource === "quiz"
+        ? "quick form"
+        : "wallet only";
 
   const short = (addr: string) =>
     `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -42,10 +51,9 @@ export function AnalysisContextBanner({
           Reading on-chain access
           {handleLabel && ` · ${handleLabel}`}
           {" · "}
-          {tasteCounts.totalSignals} taste signal
-          {tasteCounts.totalSignals === 1 ? "" : "s"}
-          {tasteCounts.quizCount > 0 &&
-            ` (${tasteCounts.quizCount} quiz)`}{" "}
+          {tasteSource === "none"
+            ? "wallet-only taste"
+            : `${tastePathLabel} · ${tasteCounts.totalSignals} signal${tasteCounts.totalSignals === 1 ? "" : "s"}`}{" "}
           · scoring
           live Renaiss catalog
         </p>
@@ -82,10 +90,9 @@ export function AnalysisContextBanner({
             </>
           )}
           {" · "}
-          {tasteCounts.totalSignals} taste signal
-          {tasteCounts.totalSignals === 1 ? "" : "s"}
-          {tasteCounts.quizCount > 0 &&
-            ` · ${tasteCounts.quizCount} quiz pick${tasteCounts.quizCount === 1 ? "" : "s"}`}
+          {tasteSource === "none"
+            ? "wallet-only enrichment"
+            : `${tastePathLabel} · ${tasteCounts.totalSignals} taste signal${tasteCounts.totalSignals === 1 ? "" : "s"}`}
           {holdingsCount != null &&
             ` · ${holdingsCount} holding${holdingsCount === 1 ? "" : "s"}`}
           {" · "}full marketplace recommendations (no ownership required)
@@ -117,12 +124,10 @@ export function AnalysisContextBanner({
         Analyze Taste will use this address
         {handleLabel && ` + ${handleLabel}`}
         {" + "}
-        {tasteCounts.totalSignals || "your"} taste signal
-        {tasteCounts.totalSignals === 1 ? "" : "s"}
-        {tasteCounts.quizCount > 0 &&
-          ` (${tasteCounts.quizCount} quiz)`}{" "}
-        to
-        recommend cards from Renaiss.
+        {tasteSource === "none"
+          ? "wallet-only taste (holdings + vision)"
+          : `${tastePathLabel} with ${tasteCounts.totalSignals || "your"} signal${tasteCounts.totalSignals === 1 ? "" : "s"}`}{" "}
+        to recommend cards from Renaiss.
       </p>
     </div>
   );

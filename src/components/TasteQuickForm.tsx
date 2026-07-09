@@ -76,8 +76,8 @@ export function TasteQuickForm({
             Quick taste profile
           </p>
           <p className="mt-1 text-xs leading-relaxed text-stone-400">
-            Don&apos;t post much on X? Tick a few boxes — TasteForge pairs your
-            answers with wallet history for analysis.
+            Don&apos;t post much on X? Tick a few boxes — answers pair with your
+            wallet history during analysis.
           </p>
         </div>
         {answeredCount > 0 && (

@@ -275,6 +275,25 @@ body {
   box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.2);
 }
 
+.taste-source-tab {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  color: #a8a29e;
+  min-width: 7.5rem;
+}
+
+.taste-source-tab:hover:not(:disabled) {
+  border-color: rgba(245, 185, 66, 0.35);
+  color: #e7e5e4;
+}
+
+.taste-source-tab.is-active {
+  border-color: rgba(245, 185, 66, 0.5);
+  background: rgba(245, 185, 66, 0.1);
+  color: #fde68a;
+  box-shadow: 0 0 0 1px rgba(245, 185, 66, 0.15);
+}
+
 .badge-value {
   border-radius: 9999px;
   border: 1px solid rgba(56, 189, 248, 0.3);
