@@ -257,14 +257,20 @@ export function WalletInput({
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={onAnalyze}
-        disabled={!canAnalyze}
-        className="btn-cta mt-5 w-full sm:w-auto"
-      >
-        {isRunning ? "Analyzing wallet…" : "Analyze Taste"}
-      </button>
+      <div className="mt-6 rounded-2xl border border-[#c9a961]/25 bg-gradient-to-b from-[#c9a961]/10 to-transparent p-4 sm:p-5">
+        <p className="section-label text-[#c9a961]/90">Primary action</p>
+        <p className="mt-1 text-xs text-stone-500">
+          Wallet above → run full taste analysis on live Renaiss listings.
+        </p>
+        <button
+          type="button"
+          onClick={onAnalyze}
+          disabled={!canAnalyze}
+          className="btn-cta btn-cta-hero mt-3 w-full sm:w-auto"
+        >
+          {isRunning ? "Analyzing wallet…" : "Analyze Taste →"}
+        </button>
+      </div>
 
       {holdings && (
         <div className="panel-teal mt-4 rounded-xl px-4 py-3">

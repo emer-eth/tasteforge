@@ -7,7 +7,7 @@
   --ink-2: #b5ac99;
   --ink-3: #8b8271;
 
-  /* Brand palette */
+  /* Brand palette (muted editorial base) */
   --gold: #c9a961;
   --gold-dim: #8a6d1f;
   --gold-hover: #e8cf8e;
@@ -21,11 +21,28 @@
   --sky: #6a9fb8;
   --rose: #c97b88;
 
+  /* Saturated boldness accents (archetype system — keep vivid) */
+  --accent-magenta: #e84393;
+  --accent-amber: #f5a623;
+  --accent-cyan: #22d3ee;
+  --accent-red: #ef4444;
+  --accent-green: #22c55e;
+  --accent-orange: #f97316;
+  --accent-silver: #e2e8f0;
+  --accent-steel: #94a3b8;
+  --accent-violet-hot: #a855f7;
+  --accent-teal-hot: #14b8a6;
+
   /* RGB helpers */
   --gold-rgb: 201, 169, 97;
   --live-rgb: 63, 169, 138;
   --violet-rgb: 155, 142, 196;
   --ink-rgb: 242, 237, 227;
+  --accent-magenta-rgb: 232, 67, 147;
+  --accent-amber-rgb: 245, 166, 35;
+  --accent-cyan-rgb: 34, 211, 238;
+  --accent-red-rgb: 239, 68, 68;
+  --accent-green-rgb: 34, 197, 94;
 
   /* Surfaces */
   --surface: rgba(30, 25, 18, 0.88);
@@ -87,15 +104,20 @@ textarea,
 }
 
 .text-gradient-brand {
+  /* Solid gold-forward — avoids muddy grey fade on hero headlines */
   background: linear-gradient(
     135deg,
     var(--gold-hover) 0%,
-    var(--gold) 40%,
-    var(--violet) 100%
+    var(--gold) 55%,
+    #d4a84b 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.text-identity {
+  color: var(--gold-hover);
 }
 
 .page-glow {
@@ -186,31 +208,55 @@ textarea,
   background: linear-gradient(145deg, rgba(var(--violet-rgb), 0.07), rgba(30, 25, 18, 0.9));
 }
 
-/* Buttons */
+/* Buttons — bold primary CTA (Renaiss-level confidence, Tessera gold) */
 .btn-cta {
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--gold-hover) 0%, var(--gold) 45%, var(--gold-dim) 100%);
-  padding: 0.875rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  border-radius: 0.9rem;
+  background: linear-gradient(
+    135deg,
+    #f0d78c 0%,
+    var(--gold-hover) 28%,
+    var(--gold) 62%,
+    var(--gold-dim) 100%
+  );
+  padding: 1rem 1.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #15120d;
+  border: 1px solid rgba(255, 236, 180, 0.45);
   box-shadow:
-    0 0 0 1px rgba(var(--gold-rgb), 0.25),
-    0 8px 32px rgba(var(--gold-rgb), 0.18);
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    0 0 0 1px rgba(var(--gold-rgb), 0.35),
+    0 0 28px rgba(var(--gold-rgb), 0.35),
+    0 10px 36px rgba(var(--gold-rgb), 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s, filter 0.15s;
 }
 
 .btn-cta:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: brightness(1.05);
   box-shadow:
-    0 0 0 1px rgba(var(--gold-rgb), 0.45),
-    0 12px 40px rgba(var(--live-rgb), 0.18);
+    0 0 0 2px rgba(var(--gold-rgb), 0.55),
+    0 0 40px rgba(var(--gold-rgb), 0.5),
+    0 14px 48px rgba(var(--gold-rgb), 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .btn-cta:disabled {
   cursor: not-allowed;
   opacity: 0.45;
   transform: none;
+  filter: none;
+  box-shadow:
+    0 0 0 1px rgba(var(--gold-rgb), 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Extra-loud CTA for hero / analyze primary */
+.btn-cta-hero {
+  padding: 1.125rem 2rem;
+  font-size: 1rem;
+  border-radius: 1rem;
 }
 
 .btn-ghost {
@@ -340,17 +386,30 @@ textarea,
   background: linear-gradient(90deg, rgba(249, 115, 138, 0.1), rgba(249, 115, 138, 0.03));
 }
 
-/* Dimension bars */
+/* Dimension bars — bold tier-style tracks */
 .dim-track {
-  height: 0.375rem;
+  height: 0.625rem;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .dim-fill {
   height: 100%;
   border-radius: 9999px;
   background: linear-gradient(90deg, var(--gold), var(--coral), var(--violet));
+}
+
+.dim-tier {
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(21, 18, 13, 0.45);
+  padding: 0.625rem 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dim-tier.is-dominant {
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Marquee */
@@ -380,23 +439,82 @@ textarea,
 
 .marquee-card {
   flex-shrink: 0;
-  width: 6.5rem;
+  width: 5rem;
   overflow: hidden;
-  border-radius: 0.625rem;
-  border: 1px solid rgba(var(--violet-rgb), 0.15);
-  background: rgba(30, 25, 18, 0.8);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(var(--violet-rgb), 0.1);
+  background: rgba(30, 25, 18, 0.55);
+  opacity: 0.72;
+  transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
 .marquee-card:hover {
-  border-color: rgba(var(--gold-rgb), 0.45);
-  box-shadow: 0 4px 20px rgba(var(--gold-rgb), 0.12);
+  border-color: rgba(var(--gold-rgb), 0.35);
+  box-shadow: 0 4px 16px rgba(var(--gold-rgb), 0.1);
+  opacity: 0.95;
 }
 
 .marquee-card img {
   aspect-ratio: 3 / 4;
   width: 100%;
   object-fit: cover;
+}
+
+/* Archetype reveal hero */
+.archetype-reveal {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(30, 25, 18, 0.95) 0%,
+    rgba(21, 18, 13, 0.98) 100%
+  );
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .archetype-reveal {
+    padding: 3.25rem 2.5rem;
+  }
+}
+
+.archetype-reveal-glow {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: min(90vw, 28rem);
+  height: min(90vw, 28rem);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  filter: blur(48px);
+  opacity: 0.45;
+}
+
+.archetype-name {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  font-size: clamp(2.25rem, 6vw, 4rem);
+}
+
+.archetype-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 
 /* Anchor scroll — clear sticky header */

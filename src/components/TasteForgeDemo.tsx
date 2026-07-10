@@ -16,6 +16,7 @@ import { TasteAssistant } from "@/components/TasteAssistant";
 import { SideNav } from "@/components/SideNav";
 import { TasteForgeLogoMark } from "@/components/TasteForgeLogo";
 import { PresentationSummary } from "@/components/PresentationSummary";
+import { ArchetypeReveal } from "@/components/ArchetypeReveal";
 import { RecommendationRefine } from "@/components/RecommendationRefine";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import { buildPendingCollectorData } from "@/lib/collector/build-pending-collector";
@@ -260,7 +261,7 @@ export function TasteForgeDemo() {
                 autoAnalyze: true,
               });
             }
-            scrollToSection("presentation");
+            scrollToSection("archetype");
           }
         }
       }
@@ -429,22 +430,22 @@ export function TasteForgeDemo() {
             </span>
           </div>
           <h2 className="headline mt-4 text-3xl sm:text-4xl lg:text-[3.25rem]">
-            <span className="text-stone-50">Wallet + taste →</span>
+            <span className="text-stone-50">Your wallet, your taste →</span>
             <br />
-            <span className="text-gradient-brand">your best Renaiss cards.</span>
+            <span className="text-identity">your collector identity.</span>
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-400 sm:text-base">
-            Real analysis on every run — live marketplace, on-chain wallet scan,
-            optional X/social or quick form. Share a link with judges for an
-            instant demo.
+            Reveal your collector archetype from a live holdings snapshot and
+            optional taste signals — then match Best Overall &amp; Best Value
+            cards on Renaiss.
           </p>
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
+              { label: "Collector archetypes", value: "11" },
+              { label: "Taste vector", value: "10-D" },
               { label: "Listings scored", value: "~150" },
-              { label: "Analysis modes", value: "LLM + Live" },
               { label: "Collector paths", value: "Holder · Quiz · Social" },
-              { label: "Pairs engine", value: "Serial match" },
             ].map((stat) => (
               <div key={stat.label} className="hero-stat">
                 <p className="text-lg font-semibold text-stone-100">
@@ -465,7 +466,7 @@ export function TasteForgeDemo() {
                 focusSelector: "#wallet-address-input",
               })
             }
-            className="btn-cta"
+            className="btn-cta btn-cta-hero"
           >
             Enter wallet → Analyze
           </button>
@@ -477,7 +478,7 @@ export function TasteForgeDemo() {
             Browse marketplace
           </button>
         </div>
-        <div className="relative mt-8">
+        <div className="relative mt-6 opacity-90">
           <LiveMarketPreview />
         </div>
       </section>
@@ -569,6 +570,29 @@ export function TasteForgeDemo() {
 
       {result && !isStale && (
         <div className="space-y-10">
+          <ArchetypeReveal
+            tasteVector={result.tasteVector}
+            shareUrl={
+              buildShareUrl({
+                walletAddress: result.walletAddress,
+                socialText,
+                xHandle,
+                tasteQuiz,
+                tasteSource,
+                autoAnalyze: true,
+              }) || undefined
+            }
+            shareSummary={[
+              `TasteForge · ${result.tasteVector.tasteArchetype || "Collector"}`,
+              result.tasteVector.summary,
+              result.bestOverall[0]
+                ? `Best Overall: ${result.bestOverall[0].card.title}`
+                : null,
+            ]
+              .filter(Boolean)
+              .join("\n")}
+          />
+
           <PresentationSummary
             result={result}
             socialText={socialText}

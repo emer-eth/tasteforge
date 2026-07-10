@@ -23,14 +23,14 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   {
     id: "top",
-    label: "Top",
+    label: "Back to top",
     short: "↑",
     targetId: "top",
     accent: "hover:border-stone-500/40",
   },
   {
     id: "analyze",
-    label: "Wallet input",
+    label: "Wallet & analyze",
     short: "⌁",
     targetId: "analyze",
     focusSelector: "#wallet-address-input",
@@ -38,28 +38,28 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: "results",
-    label: "Results",
+    label: "Taste results",
     short: "◎",
     targetId: "results",
     accent: "hover:border-teal-500/40 hover:text-teal-300",
   },
   {
     id: "presentation",
-    label: "Presentation",
+    label: "Collector identity",
     short: "★",
-    targetId: "presentation",
+    targetId: "archetype",
     accent: "hover:border-[#c9a961]/40 hover:text-[#c9a961]",
   },
   {
     id: "marketplace",
-    label: "Marketplace",
+    label: "Marketplace grid",
     short: "▦",
     targetId: "marketplace",
     accent: "hover:border-teal-500/40 hover:text-teal-300",
   },
   {
     id: "assistant",
-    label: "Ask AI",
+    label: "Ask AI guide",
     short: "✦",
     accent: "hover:border-violet-500/40 hover:text-violet-300",
   },
@@ -78,24 +78,29 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
   );
 
   useEffect(() => {
-    const sectionIds = [
-      "top",
-      "analyze",
-      "results",
-      ...(hasResults ? (["presentation"] as const) : []),
-      "marketplace",
-    ] as const;
+    const observeMap: Array<{ elId: string; navId: SideNavSection }> = [
+      { elId: "top", navId: "top" },
+      { elId: "analyze", navId: "analyze" },
+      { elId: "results", navId: "results" },
+      ...(hasResults
+        ? [
+            { elId: "archetype", navId: "presentation" as const },
+            { elId: "presentation", navId: "presentation" as const },
+          ]
+        : []),
+      { elId: "marketplace", navId: "marketplace" },
+    ];
     const observers: IntersectionObserver[] = [];
 
-    sectionIds.forEach((sectionId) => {
-      const el = document.getElementById(sectionId);
+    observeMap.forEach(({ elId, navId }) => {
+      const el = document.getElementById(elId);
       if (!el) return;
 
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setActive(sectionId);
+              setActive(navId);
             }
           });
         },
@@ -137,6 +142,7 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             type="button"
             onClick={() => handleClick(item)}
             title={item.label}
+            aria-label={item.label}
             className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#15120d]/90 px-2 py-2 text-xs font-medium text-stone-400 shadow-lg backdrop-blur-md transition-all ${
               active === item.id
                 ? item.id === "analyze"
@@ -150,7 +156,7 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.04] text-sm">
               {item.short}
             </span>
-            <span className="max-w-0 overflow-hidden whitespace-nowrap text-right opacity-0 transition-all duration-200 group-hover:max-w-[120px] group-hover:pl-2 group-hover:opacity-100">
+            <span className="max-w-0 overflow-hidden whitespace-nowrap text-right opacity-0 transition-all duration-200 group-hover:max-w-[140px] group-hover:pl-2 group-hover:opacity-100">
               {item.label}
             </span>
           </button>
@@ -167,6 +173,8 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             key={item.id}
             type="button"
             onClick={() => handleClick(item)}
+            title={item.label}
+            aria-label={item.label}
             className={`flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-[10px] transition-colors ${
               active === item.id
                 ? item.id === "analyze"
@@ -176,7 +184,13 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             }`}
           >
             <span className="text-base leading-none">{item.short}</span>
-            <span>{item.id === "analyze" ? "Wallet" : item.label.split(" ")[0]}</span>
+            <span>
+              {item.id === "analyze"
+                ? "Wallet"
+                : item.id === "presentation"
+                  ? "Identity"
+                  : item.label.split(" ")[0]}
+            </span>
           </button>
         ))}
       </nav>
