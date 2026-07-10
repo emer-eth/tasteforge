@@ -18,6 +18,10 @@ export interface RenaissCard {
   floorPrice: number;
   /** Fair market value estimate */
   fmv: number;
+  /** Live ask when listed on Renaiss (null/undefined if unlisted) */
+  askPrice?: number | null;
+  /** True when card has a live marketplace ask */
+  isListed?: boolean;
   /** 0–1 liquidity score (depth + recent sales) */
   liquidity: number;
   volume24h: number;

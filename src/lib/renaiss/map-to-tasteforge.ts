@@ -70,6 +70,8 @@ export function marketplaceCardToTasteforge(
     imageUrl: card.imageUrl,
     floorPrice,
     fmv,
+    askPrice: card.askPrice,
+    isListed: card.isListed,
     liquidity,
     volume24h: card.isListed ? 8 : 1,
     editionSize: 1,
