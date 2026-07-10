@@ -540,33 +540,52 @@ export function TasteForgeDemo() {
         />
       )}
 
-      <div id="results" className="scroll-mt-24 grid gap-6 lg:grid-cols-2">
-        <CollectorProfile data={profileData} />
-        {result && !isStale ? (
+      {/* Stale: single notice — don't keep empty collector/taste shells */}
+      {isStale && result && !isRunning && (
+        <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+          Inputs changed since the last run. Click{" "}
+          <strong className="font-semibold text-amber-50">Analyze Taste</strong>{" "}
+          again to refresh collector profile, taste vector, and recommendations.
+        </div>
+      )}
+
+      {/*
+        Only show results panels when they have real content.
+        Empty "Wallet… / No Taste Vector / No holdings" shells are noise pre-analyze.
+      */}
+      {result && !isStale && (
+        <div id="results" className="scroll-mt-24 grid gap-6 lg:grid-cols-2">
+          <CollectorProfile data={result.collectorData} />
           <TasteVectorDisplay
             tasteVector={result.tasteVector}
             processingMode={result.processingMode}
           />
-        ) : (
-          <div className="empty-state flex min-h-[320px] items-center justify-center p-8 text-center">
-            <div>
-              <p className="text-sm font-medium text-stone-400">
-                {isStale ? "Results out of date" : "No Taste Vector yet"}
-              </p>
-              <p className="mt-1 text-xs text-stone-500">
-                {isStale
-                  ? "Wallet or taste path changed — click Analyze Taste again."
-                  : "Enter wallet, pick X/social or quick form (optional), then click Analyze Taste."}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      <ActivityHistory
-        events={profileData.activityHistory ?? []}
-        collectorMode={result?.collectorMode ?? profileData.collectorMode}
-      />
+      {/* Optional: wallet preview before full analyze (only if cards found) */}
+      {!result && !isRunning && holdings && holdings.holdings.length > 0 && (
+        <div id="results" className="scroll-mt-24">
+          <CollectorProfile
+            data={{
+              profile: holdings.profile,
+              collection: holdings.holdings,
+              interactions: holdings.interactions,
+              activityHistory: holdings.activityHistory,
+              collectorMode: holdings.collectorMode,
+            }}
+          />
+        </div>
+      )}
+
+      {result &&
+        !isStale &&
+        (result.collectorData.activityHistory?.length ?? 0) > 0 && (
+          <ActivityHistory
+            events={result.collectorData.activityHistory ?? []}
+            collectorMode={result.collectorMode}
+          />
+        )}
 
       {result && !isStale && (
         <div className="space-y-10">
