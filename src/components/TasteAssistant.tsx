@@ -105,112 +105,128 @@ export function TasteAssistant({
 
   return (
     <div
-      className="panel-violet fixed bottom-20 right-4 z-50 flex w-[calc(100vw-2rem)] max-w-md flex-col overflow-hidden rounded-2xl shadow-[0_24px_80px_-20px_rgba(167,139,250,0.35)] sm:bottom-6 sm:right-6 lg:bottom-6"
-          style={{ maxHeight: "min(70vh, 520px)" }}
-          role="dialog"
-          aria-label="TasteForge assistant"
+      className="fixed bottom-20 right-4 z-50 flex w-[calc(100vw-2rem)] max-w-md flex-col overflow-hidden rounded-2xl border border-violet-500/40 sm:bottom-6 sm:right-6 lg:bottom-6"
+      style={{
+        maxHeight: "min(70vh, 520px)",
+        /* Fully opaque — no glass/backdrop so chat is always readable */
+        background: "#1a1524",
+        boxShadow:
+          "0 0 0 1px rgba(155, 142, 196, 0.15) inset, 0 28px 80px -12px rgba(0, 0, 0, 0.85), 0 12px 40px rgba(124, 58, 237, 0.25)",
+      }}
+      role="dialog"
+      aria-label="TasteForge assistant"
+    >
+      <div
+        className="flex shrink-0 items-center justify-between border-b border-violet-500/30 px-4 py-3"
+        style={{ background: "#211a2e" }}
+      >
+        <div>
+          <p className="text-sm font-semibold text-stone-50">TasteForge Guide</p>
+          <p className="text-[10px] text-violet-300">
+            Live help · wallets, taste, recommendations
+            {mode === "llm" ? " · AI" : " · Guide"}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="rounded-lg px-2 py-1 text-stone-400 transition-colors hover:bg-white/10 hover:text-stone-100"
+          aria-label="Close"
         >
-          <div className="flex items-center justify-between border-b border-violet-500/20 px-4 py-3">
-            <div>
-              <p className="text-sm font-semibold text-stone-100">
-                TasteForge Guide
-              </p>
-              <p className="text-[10px] text-violet-300/80">
-                Live help · wallets, taste, recommendations
-                {mode === "llm" ? " · AI" : " · Guide"}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-2 py-1 text-stone-500 transition-colors hover:bg-white/5 hover:text-stone-300"
-              aria-label="Close"
-            >
-              ✕
-            </button>
-          </div>
+          ✕
+        </button>
+      </div>
 
+      <div
+        ref={scrollRef}
+        className="flex-1 space-y-3 overflow-y-auto px-4 py-3"
+        style={{ background: "#1a1524" }}
+      >
+        {messages.map((msg, i) => (
           <div
-            ref={scrollRef}
-            className="flex-1 space-y-3 overflow-y-auto px-4 py-3"
+            key={i}
+            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-[#c9a961]/20 text-stone-100 ring-1 ring-[#c9a961]/25"
-                      : "bg-white/[0.04] text-stone-300 ring-1 ring-white/[0.06]"
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="rounded-2xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-violet-300">
-                  <span className="inline-flex gap-1">
-                    <span className="animate-pulse">·</span>
-                    <span className="animate-pulse [animation-delay:150ms]">·</span>
-                    <span className="animate-pulse [animation-delay:300ms]">·</span>
-                  </span>
-                </div>
-              </div>
-            )}
+            <div
+              className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                msg.role === "user"
+                  ? "bg-[#c9a961] text-[#15120d] ring-1 ring-[#e8cf8e]/40"
+                  : "bg-[#2a2238] text-stone-100 ring-1 ring-violet-400/20"
+              }`}
+            >
+              {msg.content}
+            </div>
           </div>
-
-          {messages.length <= 2 && (
-            <div className="flex flex-wrap gap-1.5 border-t border-violet-500/15 px-4 py-2">
-              {SUGGESTED_QUESTIONS.map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => sendMessage(q)}
-                  disabled={isLoading}
-                  className="badge-violet px-2.5 py-1 text-[10px] transition-opacity hover:opacity-80 disabled:opacity-40"
-                >
-                  {q}
-                </button>
-              ))}
+        ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="rounded-2xl bg-[#2a2238] px-3.5 py-2.5 text-sm text-violet-300 ring-1 ring-violet-400/20">
+              <span className="inline-flex gap-1">
+                <span className="animate-pulse">·</span>
+                <span className="animate-pulse [animation-delay:150ms]">
+                  ·
+                </span>
+                <span className="animate-pulse [animation-delay:300ms]">
+                  ·
+                </span>
+              </span>
             </div>
-          )}
+          </div>
+        )}
+      </div>
 
-          <form
-            className="border-t border-violet-500/20 p-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              sendMessage(input);
+      {messages.length <= 2 && (
+        <div
+          className="flex shrink-0 flex-wrap gap-1.5 border-t border-violet-500/25 px-4 py-2"
+          style={{ background: "#1e1830" }}
+        >
+          {SUGGESTED_QUESTIONS.map((q) => (
+            <button
+              key={q}
+              type="button"
+              onClick={() => sendMessage(q)}
+              disabled={isLoading}
+              className="rounded-full border border-violet-400/35 bg-[#2a2238] px-2.5 py-1 text-[10px] text-violet-200 transition-colors hover:border-violet-300/50 hover:bg-[#352a48] disabled:opacity-40"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <form
+        className="shrink-0 border-t border-violet-500/30 p-3"
+        style={{ background: "#211a2e" }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          sendMessage(input);
+        }}
+      >
+        <div className="flex gap-2">
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(input);
+              }
             }}
+            placeholder="Ask anything…"
+            rows={1}
+            disabled={isLoading}
+            className="min-h-[40px] flex-1 resize-none rounded-xl border border-white/15 bg-[#15120d] px-3 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            className="btn-cta shrink-0 !px-4 !py-2 !text-xs disabled:opacity-40"
           >
-            <div className="flex gap-2">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage(input);
-                  }
-                }}
-                placeholder="Ask anything…"
-                rows={1}
-                disabled={isLoading}
-                className="input-brand input-x min-h-[40px] flex-1 resize-none px-3 py-2 text-sm disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="btn-cta shrink-0 !px-4 !py-2 !text-xs disabled:opacity-40"
-              >
-                Send
-              </button>
-            </div>
-          </form>
+            Send
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
