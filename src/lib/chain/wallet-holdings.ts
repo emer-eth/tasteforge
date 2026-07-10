@@ -24,12 +24,18 @@ export async function fetchWalletHoldings(
 
   if (liveCards.length > 0) {
     const holdings = marketplaceCardsToCatalog(liveCards);
+    const observedAt = new Date();
     const interactions: CollectorInteraction[] = holdings.map((card) => ({
       cardId: card.id,
       type: "owned" as const,
-      timestamp: new Date().toISOString(),
+      // Snapshot observation time — not acquisition date
+      timestamp: observedAt.toISOString(),
     }));
-    const activityHistory = buildLiveHoldingsActivity(liveCards, holdings);
+    const activityHistory = buildLiveHoldingsActivity(
+      liveCards,
+      holdings,
+      observedAt,
+    );
     const collectorMode = resolveCollectorMode(holdings.length, socialCount);
 
     return {

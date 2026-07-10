@@ -71,13 +71,13 @@ const FAQ: FaqEntry[] = [
     keywords: ["own", "holder", "non", "without", "need", "cards", "required"],
     patterns: [/need to own|without.*card|non.?holder|must i own/i],
     answer:
-      "You **don't need to own** Renaiss cards. **Holders** get richer signals from on-chain holdings + activity history. **Non-holders** still get full marketplace recommendations — pick **one** optional path: **X & social** (paste bio/tweets) **or** **Quick form** (tick boxes). TasteForge scores the entire live catalog for you.",
+      "You **don't need to own** Renaiss cards. **Holders** get richer signals from a **live holdings snapshot** (current ownership + listings via Renaiss scan + BNB balance). **Non-holders** still get full marketplace recommendations — pick **one** optional path: **X & social** (paste bio/tweets) **or** **Quick form** (tick boxes). TasteForge scores the entire live catalog for you.",
   },
   {
     keywords: ["quiz", "form", "tick", "checkbox", "quiet", "don't post", "hardly post", "no posts"],
     patterns: [/quick (taste|form)|taste profile|don't post|hardly post|quiet poster|checkbox/i],
     answer:
-      "Pick **Quick form** (not X & social) in the optional taste section — tick era, buy drivers, visual style, personality, characters, and serial strategy. TasteForge converts your picks into taste signals and **pairs them with wallet history**. Use this OR the X/social path — not both.",
+      "Pick **Quick form** (not X & social) in the optional taste section — tick era, buy drivers, visual style, personality, characters, and serial strategy. TasteForge converts your picks into taste signals and **pairs them with current wallet holdings** when present. Use this OR the X/social path — not both.",
   },
   {
     keywords: ["taste", "vector", "archetype", "dimensions", "profile", "fingerprint"],
@@ -146,10 +146,10 @@ const FAQ: FaqEntry[] = [
       "Analysis usually takes **a few seconds** — wallet scan, optional **vision pass** on up to 3 held card images, taste vector, scoring ~150 live listings, and explanations. Holders with large collections may take slightly longer. Watch the **Agent Pipeline** steps while it runs.",
   },
   {
-    keywords: ["activity", "history", "trade", "hold", "transaction"],
-    patterns: [/activity|trade history|holdings history/i],
+    keywords: ["activity", "history", "trade", "hold", "transaction", "snapshot"],
+    patterns: [/activity|trade history|holdings history|holdings snapshot|acquisition/i],
     answer:
-      "**Trade & Hold History** shows acquisitions, listings, and transfers for **card holders** (derived from Renaiss marketplace data). Non-holders see an empty state but still get full recommendations from social taste.",
+      "**Holdings snapshot** shows what we can honestly verify right now: cards **currently owned** (Renaiss ownership scan) and **live listings** (real ask prices). It is **not** reconstructed trade history — we do not invent acquisition dates, sales, or transfers. BNB balance is read on-chain. Non-holders see an empty snapshot but still get full recommendations from social taste or the quick form.",
   },
   {
     keywords: ["presentation", "demo", "hackathon", "show", "pitch"],

@@ -14,19 +14,28 @@ export function resolveCollectorMode(
   return "non-holder";
 }
 
-/** Build hold/list activity from live marketplace cards owned by wallet */
+/**
+ * Honest holdings snapshot from live Renaiss ownership + listing data.
+ *
+ * We only emit facts we actually observe:
+ * - card is currently owned by the wallet (via marketplace owner scan)
+ * - card is currently listed (real ask price)
+ *
+ * We do NOT invent acquisition dates, sales, transfers, or trade history.
+ * Timestamps are the snapshot observation time, not on-chain event times.
+ */
 export function buildLiveHoldingsActivity(
   cards: RenaissMarketplaceCard[],
   catalog: RenaissCard[],
+  observedAt: Date = new Date(),
 ): CollectorActivityEvent[] {
   const events: CollectorActivityEvent[] = [];
-  const now = Date.now();
+  const snapshotIso = observedAt.toISOString();
 
-  for (const [i, marketCard] of cards.entries()) {
+  for (const marketCard of cards) {
     const catalogCard = catalog.find((c) => c.tokenId === marketCard.tokenId);
     const title = catalogCard?.title ?? marketCard.name;
     const imageUrl = catalogCard?.imageUrl ?? marketCard.imageUrl;
-    const acquiredAt = new Date(now - (i + 1) * 86_400_000 * 14).toISOString();
 
     events.push({
       id: `hold-${marketCard.tokenId}`,
@@ -34,40 +43,34 @@ export function buildLiveHoldingsActivity(
       tokenId: marketCard.tokenId,
       cardTitle: title,
       imageUrl,
-      timestamp: acquiredAt,
+      timestamp: snapshotIso,
       fmv: marketCard.fmv ?? undefined,
-      note: "Currently in wallet",
+      note: "Observed in wallet now · Renaiss ownership scan (not acquisition date)",
     });
 
-    if (marketCard.isListed && marketCard.askPrice) {
+    if (marketCard.isListed && marketCard.askPrice != null) {
       events.push({
         id: `list-${marketCard.tokenId}`,
         type: "listed",
         tokenId: marketCard.tokenId,
         cardTitle: title,
         imageUrl,
-        timestamp: new Date(now - i * 86_400_000 * 3).toISOString(),
+        timestamp: snapshotIso,
         price: marketCard.askPrice,
         fmv: marketCard.fmv ?? undefined,
-        note: "Listed on Renaiss marketplace",
-      });
-    } else {
-      events.push({
-        id: `acq-${marketCard.tokenId}`,
-        type: "acquired",
-        tokenId: marketCard.tokenId,
-        cardTitle: title,
-        imageUrl,
-        timestamp: acquiredAt,
-        fmv: marketCard.fmv ?? undefined,
-        note: "Acquired — holding off-market",
+        note: "Listed now on Renaiss marketplace · live ask price",
       });
     }
   }
 
-  return events.sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  );
+  // Listed first (actionable), then holdings — stable by tokenId
+  return events.sort((a, b) => {
+    if (a.type !== b.type) {
+      if (a.type === "listed") return -1;
+      if (b.type === "listed") return 1;
+    }
+    return a.tokenId.localeCompare(b.tokenId);
+  });
 }
 
 export function mergeActivityHistory(

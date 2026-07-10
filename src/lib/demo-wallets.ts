@@ -12,7 +12,7 @@ export const DEMO_WALLET_PRESETS: DemoWalletPreset[] = [
   {
     id: "large",
     label: "Big holder · 62 cards",
-    description: "Rich holdings + activity history",
+    description: "Rich holdings snapshot (live ownership)",
     walletAddress: "0x378ffaaf220ac102ea5c29bddcff1a16a2cab731",
   },
   {

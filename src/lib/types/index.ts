@@ -108,7 +108,10 @@ export interface CollectorData {
   profile: CollectorProfile;
   collection: RenaissCard[];
   interactions: CollectorInteraction[];
-  /** Trade, hold, and listing timeline — optional for new wallets */
+  /**
+   * Current holdings / listing snapshot from live Renaiss ownership scan.
+   * Not full on-chain trade history — timestamps are observation time.
+   */
   activityHistory?: CollectorActivityEvent[];
   /** Optional social / X text used to enrich taste signals */
   socialSignals?: string[];

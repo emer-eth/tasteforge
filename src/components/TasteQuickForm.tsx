@@ -77,7 +77,7 @@ export function TasteQuickForm({
           </p>
           <p className="mt-1 text-xs leading-relaxed text-stone-400">
             Don&apos;t post much on X? Tick a few boxes — answers pair with your
-            wallet history during analysis.
+            current wallet holdings during analysis.
           </p>
         </div>
         {answeredCount > 0 && (

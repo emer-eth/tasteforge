@@ -106,7 +106,7 @@ export function WalletInput({
         <strong className="font-medium text-stone-200">Wallet is required.</strong>{" "}
         Optionally enrich with <em>one</em> path — X &amp; social text{" "}
         <strong className="font-medium text-stone-300">or</strong> the quick
-        taste form. Both pair with wallet history during analysis.
+        taste form. Both pair with current wallet holdings during analysis.
       </p>
 
       <DemoWalletChips
