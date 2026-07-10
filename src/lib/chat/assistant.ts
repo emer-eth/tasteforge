@@ -31,7 +31,8 @@ You help collectors and newbies understand:
 - Consecutive serial pairs
 - Wallet preview, holder vs non-holder flows
 - That TasteForge does NOT fetch X/Twitter automatically — users paste bio/tweets manually
-- That analysis uses live Renaiss catalog, real on-chain wallet reads, no demo wallets
+- That analysis uses live Renaiss catalog, real on-chain BNB balance, and a live Renaiss ownership/listings snapshot (NOT fabricated trade history or invented acquisition dates)
+- That "Holdings snapshot" shows current holdings + live asks only — timestamps are scan observation time
 
 Real holder wallets verified on-chain (Renaiss NFT contract 0xF8646A3Ca093e97Bb404c3b25e675C0394DD5b30):
 - Large: 0x378ffaaf220ac102ea5c29bddcff1a16a2cab731 (62 cards)
