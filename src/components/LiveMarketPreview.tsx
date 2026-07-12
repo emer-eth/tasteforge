@@ -29,12 +29,12 @@ function MarqueeRow({
             {listing.imageUrl.startsWith("http") ? (
               <img src={listing.imageUrl} alt="" loading="lazy" />
             ) : (
-              <div className="flex aspect-[3/4] items-center justify-center px-1 text-center text-[8px] text-stone-600">
+              <div className="flex aspect-[3/4] items-center justify-center px-1 text-center text-[8px] text-[var(--ink-3)]">
                 {listing.serial}
               </div>
             )}
-            <div className="border-t border-stone-800/60 px-1 py-0.5">
-              <p className="truncate text-center text-[8px] text-stone-500">
+            <div className="border-t border-[var(--border)]/60 px-1 py-0.5">
+              <p className="truncate text-center text-[8px] text-[var(--ink-3)]">
                 {listing.name.split(" ").slice(-2).join(" ") || "Card"}
               </p>
             </div>
@@ -57,7 +57,7 @@ export function LiveMarketPreview() {
 
   if (listings.length === 0) {
     return (
-      <div className="mt-4 h-20 animate-pulse rounded-2xl border border-stone-800/40 bg-stone-900/30" />
+      <div className="mt-4 h-20 animate-pulse rounded-2xl border border-[var(--border)]/40 bg-[#171511]/30" />
     );
   }
 
@@ -68,7 +68,7 @@ export function LiveMarketPreview() {
   return (
     <div className="mt-4 -mx-2 sm:-mx-4">
       <div className="mb-1.5 flex items-center justify-between px-2">
-        <p className="section-label text-stone-600">
+        <p className="section-label text-[var(--ink-3)]">
           Live taste field · inspiration only
         </p>
         <span className="badge-live flex items-center gap-1 px-2 py-0.5 text-[10px] opacity-80">

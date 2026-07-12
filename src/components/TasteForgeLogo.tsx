@@ -28,7 +28,7 @@ export function TasteForgeLogoMark({
           y2="36"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#c9a961" />
+          <stop stopColor="#d8b56b" />
           <stop offset="0.55" stopColor="#f9738a" />
           <stop offset="1" stopColor="#a78bfa" />
         </linearGradient>
@@ -99,7 +99,7 @@ export function TasteForgeLogoMark({
       <circle cx="20" cy="19" r="1.1" fill="#3fa98a" fillOpacity="0.9" />
 
       {/* Dimension bars */}
-      <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#c9a961" fillOpacity="0.85" />
+      <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#d8b56b" fillOpacity="0.85" />
       <rect x="18.5" y="26.5" width="3" height="5.5" rx="0.75" fill="#f9738a" fillOpacity="0.9" />
       <rect x="24" y="27.5" width="3" height="4.5" rx="0.75" fill="#a78bfa" fillOpacity="0.85" />
 
@@ -134,11 +134,11 @@ export function TasteForgeLogo({
       {showWordmark && (
         <div>
           <h1
-            className={`text-lg font-semibold tracking-tight text-stone-50 ${titleClassName}`}
+            className={`text-lg font-semibold tracking-tight text-[#f5f3ee] ${titleClassName}`}
           >
             TasteForge
           </h1>
-          <p className="text-[11px] text-stone-500">
+          <p className="text-[11px] text-[var(--ink-3)]">
             Renaiss taste intelligence
           </p>
         </div>

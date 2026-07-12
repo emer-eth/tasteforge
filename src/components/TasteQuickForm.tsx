@@ -75,7 +75,7 @@ export function TasteQuickForm({
           <p className="section-label text-violet-300">
             Quick taste profile
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-stone-400">
+          <p className="mt-1 text-xs leading-relaxed text-[var(--ink-2)]">
             Don&apos;t post much on X? Tick a few boxes — answers pair with your
             current wallet holdings during analysis.
           </p>
@@ -91,11 +91,11 @@ export function TasteQuickForm({
         {TASTE_QUIZ_QUESTIONS.map((question) => (
           <div key={question.id}>
             <div className="mb-2 flex flex-wrap items-baseline gap-2">
-              <p className="text-xs font-medium text-stone-300">
+              <p className="text-xs font-medium text-[var(--ink-2)]">
                 {question.label}
               </p>
               {question.hint && (
-                <span className="text-[10px] text-stone-600">
+                <span className="text-[10px] text-[var(--ink-3)]">
                   {question.hint}
                 </span>
               )}
@@ -139,7 +139,7 @@ export function TasteQuickForm({
           type="button"
           disabled={disabled}
           onClick={() => onChange([])}
-          className="mt-4 text-[10px] text-stone-500 transition-colors hover:text-stone-300 disabled:opacity-50"
+          className="mt-4 text-[10px] text-[var(--ink-3)] transition-colors hover:text-[var(--ink-2)] disabled:opacity-50"
         >
           Clear quick profile
         </button>

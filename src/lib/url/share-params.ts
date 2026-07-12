@@ -43,6 +43,14 @@ export function buildShareUrl(input: {
   tasteQuiz?: string[];
   tasteSource?: TasteSourceMode;
   autoAnalyze?: boolean;
+  /** Lightweight display params so a shared link renders a personalized
+   *  Open Graph card without the crawler running a full analysis. */
+  display?: {
+    archetype?: string;
+    tasteScore?: number;
+    rank?: string;
+    topDims?: string[];
+  };
 }): string {
   if (typeof window === "undefined") return "";
 
@@ -59,6 +67,12 @@ export function buildShareUrl(input: {
     if (input.xHandle) params.set("x", input.xHandle);
   }
   if (input.autoAnalyze) params.set("analyze", "1");
+
+  const d = input.display;
+  if (d?.archetype) params.set("arch", d.archetype);
+  if (d?.tasteScore != null) params.set("ts", String(d.tasteScore));
+  if (d?.rank) params.set("rank", d.rank);
+  if (d?.topDims?.length) params.set("dims", d.topDims.slice(0, 3).join(","));
 
   const query = params.toString();
   return query

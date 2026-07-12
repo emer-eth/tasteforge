@@ -15,9 +15,9 @@ export function ListingCard({ listing, rank }: ListingCardProps) {
       href={`https://www.renaiss.xyz/card/${listing.tokenId}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/5"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[#171511]/60 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/5"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-zinc-950">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#171511]">
         {hasImage ? (
           <img
             src={listing.imageUrl}
@@ -26,14 +26,14 @@ export function ListingCard({ listing, rank }: ListingCardProps) {
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-900 to-zinc-950 px-3 text-center text-xs text-zinc-500">
+          <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-900 to-zinc-950 px-3 text-center text-xs text-[var(--ink-3)]">
             {shortName}
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
 
         {rank != null && (
-          <span className="absolute left-2 top-2 rounded-full bg-zinc-950/80 px-2 py-0.5 text-[10px] font-bold text-amber-400 backdrop-blur">
+          <span className="absolute left-2 top-2 rounded-full bg-[#171511]/80 px-2 py-0.5 text-[10px] font-bold text-amber-400 backdrop-blur">
             #{rank}
           </span>
         )}
@@ -60,7 +60,7 @@ export function ListingCard({ listing, rank }: ListingCardProps) {
             ${listing.askPrice.toFixed(0)}
           </span>
           {listing.fmv != null && listing.fmv > 0 && (
-            <span className="text-[10px] text-zinc-500">
+            <span className="text-[10px] text-[var(--ink-3)]">
               FMV ${listing.fmv.toFixed(0)}
             </span>
           )}
@@ -74,19 +74,19 @@ export function ListingCard({ listing, rank }: ListingCardProps) {
 
         <div className="flex flex-wrap gap-1">
           {listing.grade && (
-            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[9px] text-zinc-400">
+            <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-[var(--ink-2)]">
               {listing.grader} {listing.grade}
             </span>
           )}
           {listing.setName && (
-            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[9px] text-zinc-500">
+            <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-[var(--ink-3)]">
               {listing.setName.length > 18
                 ? listing.setName.slice(0, 15) + "…"
                 : listing.setName}
             </span>
           )}
           {listing.year != null && (
-            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[9px] text-zinc-500">
+            <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-[var(--ink-3)]">
               {listing.year}
             </span>
           )}

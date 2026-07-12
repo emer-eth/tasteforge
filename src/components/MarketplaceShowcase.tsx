@@ -14,12 +14,12 @@ const PAGE_SIZE = 48;
 
 function ListingSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
-      <div className="aspect-[3/4] bg-zinc-800/60" />
+    <div className="animate-pulse overflow-hidden rounded-2xl border border-[var(--border)] bg-[#171511]/40">
+      <div className="aspect-[3/4] bg-white/[0.06]" />
       <div className="space-y-2 p-3">
-        <div className="h-5 w-16 rounded bg-zinc-800" />
-        <div className="h-3 w-full rounded bg-zinc-800/80" />
-        <div className="h-3 w-2/3 rounded bg-zinc-800/60" />
+        <div className="h-5 w-16 rounded bg-white/[0.06]" />
+        <div className="h-3 w-full rounded bg-white/[0.06]" />
+        <div className="h-3 w-2/3 rounded bg-white/[0.06]" />
       </div>
     </div>
   );
@@ -110,7 +110,7 @@ export function MarketplaceShowcase({
               Live catalog
             </span>
             {!isLoading && total > 0 && (
-              <span className="rounded-full border border-zinc-700 bg-zinc-900 px-2.5 py-0.5 text-[10px] text-zinc-400">
+              <span className="rounded-full border border-[var(--border)] bg-[#171511] px-2.5 py-0.5 text-[10px] text-[var(--ink-2)]">
                 {total.toLocaleString()} listed
               </span>
             )}
@@ -120,12 +120,12 @@ export function MarketplaceShowcase({
               </span>
             )}
           </div>
-          <h2 className="headline text-2xl text-zinc-50 sm:text-3xl">
+          <h2 className="headline text-2xl text-[#f5f3ee] sm:text-3xl">
             {isSupplementary
               ? "Browse live Renaiss listings"
               : "Top Renaiss Marketplace"}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--ink-2)]">
             {isSupplementary
               ? "The same live marketplace TasteForge scores against — explore what's listed while your recommendations stay personalized above."
               : "Real graded Pokémon cards listed right now — prices, FMV, and bargain highlights pulled live from the Renaiss marketplace."}
@@ -135,7 +135,7 @@ export function MarketplaceShowcase({
           href="https://www.renaiss.xyz/marketplace"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-200 transition-colors hover:border-amber-500/40 hover:text-amber-200"
+          className="shrink-0 rounded-xl border border-[var(--border)] bg-[#171511] px-4 py-2.5 text-sm font-medium text-[#f5f3ee] transition-colors hover:border-amber-500/40 hover:text-amber-200"
         >
           Open Renaiss ↗
         </a>
@@ -149,13 +149,13 @@ export function MarketplaceShowcase({
             onClick={() => setFilter(f.id)}
             className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
               filter === f.id
-                ? "bg-[#c9a961]/15 text-[#c9a961] ring-1 ring-[#c9a961]/40"
-                : "bg-zinc-800/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                ? "bg-[#d8b56b]/15 text-[#d8b56b] ring-1 ring-[#d8b56b]/40"
+                : "bg-white/[0.06] text-[var(--ink-2)] hover:bg-white/[0.06] hover:text-[#f5f3ee]"
             }`}
           >
             {f.label}
             {f.count != null && (
-              <span className="ml-1 text-zinc-500">({f.count})</span>
+              <span className="ml-1 text-[var(--ink-3)]">({f.count})</span>
             )}
           </button>
         ))}
@@ -174,8 +174,8 @@ export function MarketplaceShowcase({
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-800 py-16 text-center">
-          <p className="text-sm text-zinc-400">
+        <div className="rounded-2xl border border-dashed border-[var(--border)] py-16 text-center">
+          <p className="text-sm text-[var(--ink-2)]">
             No listings match this filter yet.
           </p>
           <button
@@ -208,7 +208,7 @@ export function MarketplaceShowcase({
             type="button"
             onClick={() => fetchListings(offset, true)}
             disabled={isLoadingMore}
-            className="rounded-xl border border-zinc-700 bg-zinc-900 px-6 py-2.5 text-sm font-medium text-zinc-200 transition-colors hover:border-amber-500/40 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl border border-[var(--border)] bg-[#171511] px-6 py-2.5 text-sm font-medium text-[#f5f3ee] transition-colors hover:border-amber-500/40 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoadingMore
               ? "Loading more cards..."

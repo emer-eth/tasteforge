@@ -28,7 +28,7 @@ export function CardDisplay({
       <div className={`relative ${compact ? "aspect-[4/3]" : "aspect-[3/4]"}`}>
         <CardArt card={card} className="h-full w-full" />
         {rank !== undefined && (
-          <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-sm font-bold text-[#c9a961] ring-1 ring-[#c9a961]/30 backdrop-blur">
+          <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-sm font-bold text-[#d8b56b] ring-1 ring-[#d8b56b]/30 backdrop-blur">
             #{rank}
           </div>
         )}
@@ -47,18 +47,18 @@ export function CardDisplay({
       </div>
 
       {!compact && (
-        <div className="grid grid-cols-3 gap-px border-t border-zinc-800 bg-zinc-800">
-          <div className="bg-zinc-900/80 px-3 py-2 text-center">
-            <p className="text-[9px] uppercase tracking-wider text-zinc-500">Floor</p>
-            <p className="text-sm font-semibold text-zinc-200">${card.floorPrice}</p>
+        <div className="grid grid-cols-3 gap-px border-t border-[var(--border)] bg-[var(--border)]">
+          <div className="bg-[#171511] px-3 py-2 text-center">
+            <p className="text-[9px] uppercase tracking-wider text-[var(--ink-3)]">Floor</p>
+            <p className="text-sm font-semibold text-[#f5f3ee]">${card.floorPrice}</p>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-2 text-center">
-            <p className="text-[9px] uppercase tracking-wider text-zinc-500">FMV</p>
-            <p className="text-sm font-semibold text-zinc-200">${card.fmv}</p>
+          <div className="bg-[#171511] px-3 py-2 text-center">
+            <p className="text-[9px] uppercase tracking-wider text-[var(--ink-3)]">FMV</p>
+            <p className="text-sm font-semibold text-[#f5f3ee]">${card.fmv}</p>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-2 text-center">
-            <p className="text-[9px] uppercase tracking-wider text-zinc-500">Liq</p>
-            <p className="text-sm font-semibold text-zinc-200">
+          <div className="bg-[#171511] px-3 py-2 text-center">
+            <p className="text-[9px] uppercase tracking-wider text-[var(--ink-3)]">Liq</p>
+            <p className="text-sm font-semibold text-[#f5f3ee]">
               {(card.liquidity * 100).toFixed(0)}%
             </p>
           </div>
@@ -66,7 +66,7 @@ export function CardDisplay({
       )}
 
       {fmvDelta > 5 && !compact && (
-        <div className="border-t border-zinc-800 bg-sky-500/5 px-3 py-1.5 text-center text-[10px] text-sky-400">
+        <div className="border-t border-[var(--border)] bg-[var(--live)]/[0.08] px-3 py-1.5 text-center text-[10px] text-[var(--live)]">
           {fmvDelta.toFixed(0)}% below FMV estimate
         </div>
       )}

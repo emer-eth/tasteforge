@@ -17,7 +17,7 @@ export function DemoWalletChips({
 }: DemoWalletChipsProps) {
   return (
     <div className="mt-5 rounded-2xl border border-white/[0.05] bg-black/20 p-4">
-      <p className="section-label text-stone-500">Quick demo wallets</p>
+      <p className="section-label text-[var(--ink-3)]">Quick demo wallets</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {DEMO_WALLET_PRESETS.map((preset) => (
           <button
@@ -28,7 +28,7 @@ export function DemoWalletChips({
             className="chip-demo disabled:cursor-not-allowed disabled:opacity-50"
             title={preset.description}
           >
-            <span className="font-semibold text-[#c9a961]">{preset.label}</span>
+            <span className="font-semibold text-[#d8b56b]">{preset.label}</span>
           </button>
         ))}
         <button
@@ -40,7 +40,7 @@ export function DemoWalletChips({
           + Sample social text
         </button>
       </div>
-      <p className="mt-3 text-[10px] leading-relaxed text-stone-600">
+      <p className="mt-3 text-[10px] leading-relaxed text-[var(--ink-3)]">
         Verified on-chain Renaiss holders · non-holder preset includes taste
         notes ({SAMPLE_SOCIAL_TEXT.slice(0, 36)}…)
       </p>

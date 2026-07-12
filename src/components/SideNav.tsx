@@ -34,7 +34,7 @@ const NAV_ITEMS: NavItem[] = [
     short: "⌁",
     targetId: "analyze",
     focusSelector: "#wallet-address-input",
-    accent: "border-[#c9a961]/40 bg-[#c9a961]/10 text-[#c9a961] hover:bg-[#c9a961]/20",
+    accent: "border-[#d8b56b]/40 bg-[#d8b56b]/10 text-[#d8b56b] hover:bg-[#d8b56b]/20",
   },
   {
     id: "results",
@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
     label: "Collector identity",
     short: "★",
     targetId: "archetype",
-    accent: "hover:border-[#c9a961]/40 hover:text-[#c9a961]",
+    accent: "hover:border-[#d8b56b]/40 hover:text-[#d8b56b]",
   },
   {
     id: "marketplace",
@@ -143,13 +143,13 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             onClick={() => handleClick(item)}
             title={item.label}
             aria-label={item.label}
-            className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#15120d]/90 px-2 py-2 text-xs font-medium text-stone-400 shadow-lg backdrop-blur-md transition-all ${
+            className={`group flex flex-row-reverse items-center gap-2 rounded-full border border-white/[0.08] bg-[#15120d]/90 px-2 py-2 text-xs font-medium text-[var(--ink-2)] shadow-lg backdrop-blur-md transition-all ${
               active === item.id
                 ? item.id === "analyze"
-                  ? "border-[#c9a961]/50 bg-[#c9a961]/15 text-[#c9a961] shadow-[0_0_24px_-4px_rgba(201,169,97,0.35)]"
+                  ? "border-[#d8b56b]/50 bg-[#d8b56b]/15 text-[#d8b56b] shadow-[0_0_24px_-4px_rgba(201,169,97,0.35)]"
                   : item.id === "presentation"
-                    ? "border-[#c9a961]/40 bg-[#c9a961]/10 text-[#c9a961]"
-                    : "border-white/20 bg-white/10 text-stone-200"
+                    ? "border-[#d8b56b]/40 bg-[#d8b56b]/10 text-[#d8b56b]"
+                    : "border-white/20 bg-white/10 text-[#f5f3ee]"
                 : item.accent
             }`}
           >
@@ -178,9 +178,9 @@ export function SideNav({ onOpenAssistant, hasResults }: SideNavProps) {
             className={`flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-[10px] transition-colors ${
               active === item.id
                 ? item.id === "analyze"
-                  ? "text-[#c9a961]"
-                  : "text-stone-200"
-                : "text-stone-500"
+                  ? "text-[#d8b56b]"
+                  : "text-[#f5f3ee]"
+                : "text-[var(--ink-3)]"
             }`}
           >
             <span className="text-base leading-none">{item.short}</span>

@@ -44,10 +44,10 @@ export function AnalysisContextBanner({
   if (isRunning) {
     return (
       <div className="panel status-running rounded-xl px-4 py-3">
-        <p className="text-sm font-medium text-[#c9a961]">
+        <p className="text-sm font-medium text-[#d8b56b]">
           Analyzing wallet {short(walletAddress)}…
         </p>
-        <p className="mt-1 text-xs text-stone-400">
+        <p className="mt-1 text-xs text-[var(--ink-2)]">
           Reading on-chain access
           {handleLabel && ` · ${handleLabel}`}
           {" · "}
@@ -70,7 +70,7 @@ export function AnalysisContextBanner({
         <p className="mt-1 font-mono text-[10px] text-teal-400/70">
           {analyzedWallet}
         </p>
-        <p className="mt-1 text-xs text-stone-400">
+        <p className="mt-1 text-xs text-[var(--ink-2)]">
           {collectorMode === "holder"
             ? "Card holder"
             : collectorMode === "social-only"
@@ -107,7 +107,7 @@ export function AnalysisContextBanner({
         <p className="text-sm font-medium text-[#f9738a]">
           Wallet changed — results below are for {short(analyzedWallet)}
         </p>
-        <p className="mt-1 text-xs text-stone-400">
+        <p className="mt-1 text-xs text-[var(--ink-2)]">
           Current input: {short(walletAddress)}. Click Analyze Taste again to
           update recommendations.
         </p>
@@ -117,10 +117,10 @@ export function AnalysisContextBanner({
 
   return (
     <div className="panel rounded-xl px-4 py-3">
-      <p className="text-sm font-medium text-stone-300">
+      <p className="text-sm font-medium text-[var(--ink-2)]">
         Ready: wallet {short(walletAddress)}
       </p>
-      <p className="mt-1 text-xs text-stone-500">
+      <p className="mt-1 text-xs text-[var(--ink-3)]">
         Analyze Taste will use this address
         {handleLabel && ` + ${handleLabel}`}
         {" + "}

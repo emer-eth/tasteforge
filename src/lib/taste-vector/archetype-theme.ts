@@ -110,10 +110,10 @@ const THEMES: Record<ArchetypeName, ArchetypeTheme> = {
   },
   "Balanced Collector": {
     key: "Balanced Collector",
-    accent: "#c9a961",
-    accentSoft: "rgba(201, 169, 97, 0.16)",
-    gradient: "linear-gradient(135deg, #8a6d1f 0%, #c9a961 45%, #e8cf8e 100%)",
-    accentRgb: "201, 169, 97",
+    accent: "#d8b56b",
+    accentSoft: "rgba(216, 181, 107, 0.16)",
+    gradient: "linear-gradient(135deg, #a07f3a 0%, #d8b56b 45%, #f1d18a 100%)",
+    accentRgb: "216, 181, 107",
   },
 };
 

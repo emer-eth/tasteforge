@@ -64,11 +64,11 @@ export function PresentationSummary({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="section-label text-[#c9a961]">Presentation snapshot</p>
-          <h2 className="headline mt-2 text-2xl text-stone-50">
+          <p className="section-label text-[#d8b56b]">Presentation snapshot</p>
+          <h2 className="headline mt-2 text-2xl text-[#f5f3ee]">
             Demo-ready summary
           </h2>
-          <p className="mt-2 text-sm text-stone-400">
+          <p className="mt-2 text-sm text-[var(--ink-2)]">
             Screenshot-friendly card for judges — copy or share a pre-filled link.
           </p>
         </div>
@@ -102,10 +102,10 @@ export function PresentationSummary({
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="stat-tile">
-          <p className="text-[10px] uppercase tracking-wider text-stone-500">
+          <p className="text-[10px] uppercase tracking-wider text-[var(--ink-3)]">
             Wallet
           </p>
-          <p className="mt-1 font-mono text-sm text-stone-200">
+          <p className="mt-1 font-mono text-sm text-[#f5f3ee]">
             {shortWallet(result.walletAddress ?? "")}
           </p>
           <p className="mt-1 text-xs capitalize text-teal-300/90">
@@ -114,19 +114,19 @@ export function PresentationSummary({
         </div>
 
         <div className="stat-tile">
-          <p className="text-[10px] uppercase tracking-wider text-stone-500">
+          <p className="text-[10px] uppercase tracking-wider text-[var(--ink-3)]">
             Archetype
           </p>
           <p className="headline mt-1 text-lg text-gradient-brand">
             {result.tasteVector.tasteArchetype || "Analyzing…"}
           </p>
-          <p className="mt-1 text-xs text-stone-500">
+          <p className="mt-1 text-xs text-[var(--ink-3)]">
             {result.processingMode === "llm" ? "LLM analysis" : "Live analysis"}
           </p>
         </div>
 
-        <div className="stat-tile border-[#c9a961]/20 bg-[#c9a961]/5">
-          <p className="text-[10px] uppercase tracking-wider text-[#c9a961]/80">
+        <div className="stat-tile border-[#d8b56b]/20 bg-[#d8b56b]/5">
+          <p className="text-[10px] uppercase tracking-wider text-[#d8b56b]/80">
             Best Overall
           </p>
           {topOverall && (
@@ -136,11 +136,11 @@ export function PresentationSummary({
               className="mt-2 h-20 w-14 rounded-lg border border-white/10 object-cover shadow-lg"
             />
           )}
-          <p className="mt-2 text-sm font-medium text-stone-100">
+          <p className="mt-2 text-sm font-medium text-[#f5f3ee]">
             {topOverall?.card.title ?? "—"}
           </p>
           {topOverall && (
-            <p className="mt-1 text-xs text-stone-400">
+            <p className="mt-1 text-xs text-[var(--ink-2)]">
               ${topOverall.card.floorPrice} ·{" "}
               {(topOverall.resonanceScore * 100).toFixed(0)}% match
             </p>
@@ -158,11 +158,11 @@ export function PresentationSummary({
               className="mt-2 h-20 w-14 rounded-lg border border-white/10 object-cover shadow-lg"
             />
           )}
-          <p className="mt-2 text-sm font-medium text-stone-100">
+          <p className="mt-2 text-sm font-medium text-[#f5f3ee]">
             {topValue?.card.title ?? "—"}
           </p>
           {topValue && (
-            <p className="mt-1 text-xs text-stone-400">
+            <p className="mt-1 text-xs text-[var(--ink-2)]">
               ${topValue.card.floorPrice} · {topValue.valueInsight}
             </p>
           )}
@@ -170,7 +170,7 @@ export function PresentationSummary({
       </div>
 
       {topPair && (
-        <div className="mt-4 rounded-xl border border-violet-500/20 bg-violet-500/5 px-4 py-3 text-sm text-stone-300">
+        <div className="mt-4 rounded-xl border border-violet-500/20 bg-violet-500/5 px-4 py-3 text-sm text-[var(--ink-2)]">
           <span className="font-medium text-violet-300">Top pair:</span>{" "}
           {topPair.serialRange} · {topPair.card1.name} + {topPair.card2.name} ·
           ${topPair.totalCost.toLocaleString()} total
@@ -178,8 +178,8 @@ export function PresentationSummary({
       )}
 
       {topOverall?.explanation && (
-        <p className="mt-4 text-sm leading-relaxed text-stone-400">
-          <span className="font-medium text-stone-300">Why #1:</span>{" "}
+        <p className="mt-4 text-sm leading-relaxed text-[var(--ink-2)]">
+          <span className="font-medium text-[var(--ink-2)]">Why #1:</span>{" "}
           {topOverall.explanation}
         </p>
       )}

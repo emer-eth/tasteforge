@@ -15,9 +15,9 @@ function RecommendationSection({
   accent = "gold",
 }: RecommendationSectionProps) {
   const accentBorder =
-    accent === "sky" ? "border-sky-400/50" : "border-[#c9a961]/50";
+    accent === "sky" ? "border-[var(--sky)]/50" : "border-[var(--gold)]/50";
   const accentText =
-    accent === "sky" ? "text-sky-400" : "text-[#c9a961]";
+    accent === "sky" ? "text-[var(--sky)]" : "text-[var(--gold)]";
 
   if (recommendations.length === 0) return null;
 
@@ -27,7 +27,7 @@ function RecommendationSection({
         className={`mb-6 rounded-2xl border-l-[3px] ${accentBorder} bg-black/20 py-4 pl-5 pr-4`}
       >
         <p className={`section-label ${accentText}`}>{title}</p>
-        <h2 className="headline mt-2 text-2xl text-stone-50 sm:text-3xl">
+        <h2 className="headline mt-2 text-2xl text-[#f5f3ee] sm:text-3xl">
           {subtitle}
         </h2>
       </div>
@@ -59,7 +59,7 @@ export function RecommendationGrid({
 }: RecommendationGridProps) {
   if (showEmptyHint) {
     return (
-      <div className="panel border-dashed p-8 text-center text-sm text-stone-400">
+      <div className="panel border-dashed p-8 text-center text-sm text-[var(--ink-2)]">
         No cards match your refine filters — loosen price or tag filters above.
       </div>
     );

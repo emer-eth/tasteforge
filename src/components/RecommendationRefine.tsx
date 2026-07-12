@@ -26,7 +26,7 @@ export function RecommendationRefine({
     <div className="panel panel-violet flex flex-col gap-4 p-5 sm:flex-row sm:flex-wrap sm:items-end">
       <p className="section-label w-full text-violet-300/70">Refine picks</p>
       <div className="min-w-[180px] flex-1">
-        <label className="text-xs font-medium text-stone-500">
+        <label className="text-xs font-medium text-[var(--ink-3)]">
           Max price (${filters.maxPrice ?? maxCatalogPrice})
         </label>
         <input
@@ -41,11 +41,11 @@ export function RecommendationRefine({
               maxPrice: Number(e.target.value),
             })
           }
-          className="mt-2 w-full accent-[#c9a961]"
+          className="mt-2 w-full accent-[#d8b56b]"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-stone-300">
+      <label className="flex items-center gap-2 text-sm text-[var(--ink-2)]">
         <input
           type="checkbox"
           checked={filters.vintageOnly}
@@ -57,7 +57,7 @@ export function RecommendationRefine({
         Vintage only
       </label>
 
-      <label className="flex items-center gap-2 text-sm text-stone-300">
+      <label className="flex items-center gap-2 text-sm text-[var(--ink-2)]">
         <input
           type="checkbox"
           checked={filters.psa10Only}
@@ -69,7 +69,7 @@ export function RecommendationRefine({
         PSA 10
       </label>
 
-      <label className="flex items-center gap-2 text-sm text-stone-300">
+      <label className="flex items-center gap-2 text-sm text-[var(--ink-2)]">
         <input
           type="checkbox"
           checked={filters.bargainsOnly}
@@ -85,7 +85,7 @@ export function RecommendationRefine({
         <button
           type="button"
           onClick={() => onChange({ ...DEFAULT_FILTERS })}
-          className="text-xs text-stone-500 underline hover:text-stone-300"
+          className="text-xs text-[var(--ink-3)] underline hover:text-[var(--ink-2)]"
         >
           Reset filters
         </button>

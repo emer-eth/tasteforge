@@ -1,44 +1,68 @@
 "use client";
 
-import { TasteForgeLogo } from "@/components/TasteForgeLogo";
-import { scrollToSection } from "@/lib/scroll-to-section";
+import { useEffect, useState } from "react";
+import { TasteForgeLogoMark } from "@/components/TasteForgeLogo";
+
+const NAV_ITEMS: Array<{ label: string; href: string; external?: boolean }> = [
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Marketplace", href: "/#marketplace" },
+  { label: "Team", href: "/team" },
+  { label: "Docs", href: "https://github.com/blueskylh/renaiss-scanner", external: true },
+  { label: "About", href: "/#how-it-works" },
+];
 
 export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="header-glass sticky top-0 z-50">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
-        <a href="#top" className="group transition-opacity hover:opacity-95">
-          <TasteForgeLogo
-            titleClassName="transition-colors group-hover:text-[#c9a961]"
-          />
+    <header
+      className={`site-nav sticky top-0 z-50 ${scrolled ? "is-scrolled" : ""}`}
+    >
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6 md:px-12 lg:px-20">
+        {/* Logo lockup */}
+        <a
+          href="/"
+          className="group flex items-center gap-3 transition-opacity hover:opacity-95"
+        >
+          <span className="nav-logo transition-transform group-hover:scale-[1.04]">
+            <TasteForgeLogoMark size={26} />
+          </span>
+          <span className="leading-tight">
+            <span className="block text-[22px] font-semibold tracking-tight text-[#f5f3ee] transition-colors group-hover:text-[var(--gold)]">
+              TasteForge
+            </span>
+            <span className="block text-[11px] tracking-wide text-[var(--ink-3)]">
+              Renaissance Taste Intelligence
+            </span>
+          </span>
         </a>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              scrollToSection("analyze", {
-                focusSelector: "#wallet-address-input",
-              })
-            }
-            className="btn-cta hidden !px-4 !py-2 !text-xs sm:inline-flex"
-          >
-            Analyze wallet
-          </button>
-          <a
-            href="https://renaiss-tool-689931.napa.de5.net/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="badge-violet hidden px-3 py-1.5 text-xs transition-all hover:scale-[1.02] hover:opacity-90 md:inline"
-          >
-            Scanner ↗
-          </a>
-          <a
-            href="https://www.renaiss.xyz/marketplace"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="badge-live px-3 py-1.5 text-xs font-medium transition-all hover:scale-[1.02] hover:opacity-90"
-          >
-            Renaiss ↗
+
+        {/* Center nav */}
+        <nav className="hidden items-center gap-10 lg:flex">
+          {NAV_ITEMS.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              className="nav-link"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          <a href="/#analyze" className="btn-gold btn-gold-sm">
+            Analyze wallet <span aria-hidden>→</span>
           </a>
         </div>
       </div>

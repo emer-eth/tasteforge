@@ -5,6 +5,7 @@ import type { CardRecommendation } from "@/lib/types";
 import { CardDisplay } from "@/components/CardDisplay";
 import { CardPreviewModal } from "@/components/CardPreviewModal";
 import { MatchHighlights } from "@/components/MatchHighlights";
+import { WhyThisCard } from "@/components/intelligence/WhyThisCard";
 
 interface RecommendationCardProps {
   recommendation: CardRecommendation;
@@ -24,7 +25,6 @@ export function RecommendationCard({
     valueScore,
     matchingTags,
     explanation,
-    whyNow,
     valueInsight,
     dimensionAlignment,
   } = recommendation;
@@ -47,7 +47,7 @@ export function RecommendationCard({
             rank={rank}
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
-            <span className="scale-90 rounded-full border border-white/30 bg-zinc-950/80 px-4 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur transition-all group-hover:scale-100 group-hover:opacity-100">
+            <span className="scale-90 rounded-full border border-white/30 bg-[#171511]/80 px-4 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur transition-all group-hover:scale-100 group-hover:opacity-100">
               Preview card
             </span>
           </div>
@@ -56,11 +56,11 @@ export function RecommendationCard({
         <div className="p-4">
           <MatchHighlights alignment={dimensionAlignment} />
 
-          <p className="mb-2 mt-3 text-xs font-medium text-sky-400/90">
+          <p className="mb-2 mt-3 text-xs font-medium text-[var(--sky)]">
             {valueInsight}
           </p>
 
-          <p className="mb-3 text-sm leading-relaxed text-zinc-300">
+          <p className="mb-3 text-sm leading-relaxed text-[var(--ink-2)]">
             {explanation}
           </p>
 
@@ -74,9 +74,7 @@ export function RecommendationCard({
             </div>
           )}
 
-          <div className="mb-3 border-t border-zinc-800 pt-3">
-            <p className="text-xs leading-relaxed text-amber-400/90">{whyNow}</p>
-          </div>
+          <WhyThisCard recommendation={recommendation} defaultOpen={rank === 1} />
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button

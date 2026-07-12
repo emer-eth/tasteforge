@@ -7,17 +7,33 @@ import { CollectorProfile } from "@/components/CollectorProfile";
 import { TasteVectorDisplay } from "@/components/TasteVectorDisplay";
 import { RecommendationGrid } from "@/components/RecommendationGrid";
 import { PairHighlightGrid } from "@/components/PairHighlightGrid";
-import { MarketplaceShowcase } from "@/components/MarketplaceShowcase";
-import { LiveMarketPreview } from "@/components/LiveMarketPreview";
 import { AnalysisContextBanner } from "@/components/AnalysisContextBanner";
 import { ActivityHistory } from "@/components/ActivityHistory";
 import { AgentProgress } from "@/components/AgentProgress";
 import { TasteAssistant } from "@/components/TasteAssistant";
 import { SideNav } from "@/components/SideNav";
-import { TasteForgeLogoMark } from "@/components/TasteForgeLogo";
 import { PresentationSummary } from "@/components/PresentationSummary";
 import { ArchetypeReveal } from "@/components/ArchetypeReveal";
 import { RecommendationRefine } from "@/components/RecommendationRefine";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { MetricsRow } from "@/components/landing/MetricsRow";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { AiPreviewShowcase } from "@/components/landing/AiPreviewShowcase";
+import { MarketplaceExplorer } from "@/components/intelligence/MarketplaceExplorer";
+import { FooterCta } from "@/components/landing/FooterCta";
+import { SiteFooter } from "@/components/landing/SiteFooter";
+import { LiveDashboard } from "@/components/intelligence/LiveDashboard";
+import { CollectorConsole } from "@/components/intelligence/CollectorConsole";
+import { AskAiPanel } from "@/components/intelligence/AskAiPanel";
+import { VisualTasteQuiz } from "@/components/intelligence/VisualTasteQuiz";
+import {
+  deriveCollectorIdentity,
+  deriveTasteDna,
+} from "@/lib/intelligence/derive";
+import {
+  cardsToTasteText,
+  NEWBIE_WALLET,
+} from "@/lib/intelligence/visual-picks";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import { buildPendingCollectorData } from "@/lib/collector/build-pending-collector";
 import {
@@ -25,14 +41,19 @@ import {
   refineRecommendations,
   type RecommendationFilters,
 } from "@/lib/analysis/refine";
-import { SAMPLE_SOCIAL_TEXT } from "@/lib/demo-wallets";
+import { DEMO_WALLET_PRESETS, SAMPLE_SOCIAL_TEXT } from "@/lib/demo-wallets";
 import type { DemoWalletPreset } from "@/lib/demo-wallets";
 import {
   resolveAnalyzeTasteInput,
   type TasteSourceMode,
 } from "@/lib/taste-quiz/source-mode";
 import { buildShareUrl, parseShareParams } from "@/lib/url/share-params";
-import type { CollectorData, TasteForgeResult, WalletHoldings } from "@/lib/types";
+import type {
+  CollectorData,
+  MarketplaceListing,
+  TasteForgeResult,
+  WalletHoldings,
+} from "@/lib/types";
 
 function normalizeWallet(addr: string): string {
   return addr.trim().toLowerCase();
@@ -63,7 +84,13 @@ export function TasteForgeDemo() {
   const [progressLabel, setProgressLabel] = useState<string | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantSeed, setAssistantSeed] = useState<string | null>(null);
   const [filters, setFilters] = useState<RecommendationFilters>(DEFAULT_FILTERS);
+
+  const askAssistant = useCallback((question: string) => {
+    setAssistantSeed(question.trim() ? question : null);
+    setAssistantOpen(true);
+  }, []);
 
   const syncUrl = useCallback(
     (input: {
@@ -261,7 +288,7 @@ export function TasteForgeDemo() {
                 autoAnalyze: true,
               });
             }
-            scrollToSection("archetype");
+            scrollToSection("dashboard");
           }
         }
       }
@@ -283,6 +310,47 @@ export function TasteForgeDemo() {
       tasteSource,
     });
   }, [runAnalysis, walletAddress, socialText, xHandle, tasteQuiz, tasteSource]);
+
+  /** Wallet-free flow: derive taste from picked card art, run on a placeholder
+   *  non-holder wallet so newcomers get a full result with no wallet. */
+  const runTasteOnly = useCallback(
+    (cards: MarketplaceListing[]) => {
+      const text = cardsToTasteText(cards);
+      setWalletAddress(NEWBIE_WALLET);
+      setTasteSource("social");
+      setSocialText(text);
+      setXHandle("");
+      setTasteQuiz([]);
+      setHoldings(null);
+      void runAnalysis({
+        walletAddress: NEWBIE_WALLET,
+        socialText: text,
+        xHandle: "",
+        tasteQuiz: [],
+        tasteSource: "social",
+      });
+    },
+    [runAnalysis],
+  );
+
+  /** One-click "see a live example" — runs a real demo wallet. */
+  const seeExample = useCallback(() => {
+    const preset =
+      DEMO_WALLET_PRESETS.find((p) => /medium/i.test(p.label)) ??
+      DEMO_WALLET_PRESETS[0];
+    handleDemoSelect(preset);
+    void runAnalysis({
+      walletAddress: preset.walletAddress,
+      socialText: preset.socialText ?? "",
+      xHandle: preset.xHandle ?? "",
+      tasteQuiz: preset.tasteQuiz ?? [],
+      tasteSource: preset.tasteQuiz?.length
+        ? "quiz"
+        : preset.socialText || preset.xHandle
+          ? "social"
+          : "none",
+    });
+  }, [handleDemoSelect, runAnalysis]);
 
   useEffect(() => {
     const params = parseShareParams(searchParams);
@@ -395,95 +463,46 @@ export function TasteForgeDemo() {
     ],
   );
 
+  const shareDisplay = useMemo(() => {
+    if (!result || isStale) return undefined;
+    const id = deriveCollectorIdentity(result);
+    const topDims = deriveTasteDna(result.tasteVector)
+      .slice()
+      .sort((a, b) => Math.abs(b.value - 0.5) - Math.abs(a.value - 0.5))
+      .slice(0, 3)
+      .map((d) => d.label);
+    return {
+      archetype: id.archetype,
+      tasteScore: id.tasteScore,
+      rank: id.rank,
+      topDims,
+    };
+  }, [result, isStale]);
+
+  const resultQuestions = useMemo(() => {
+    if (!result || isStale) return [];
+    const arch = result.tasteVector.tasteArchetype || "collector";
+    const top = result.bestOverall[0]?.card.title;
+    return [
+      `Why am I a ${arch}?`,
+      top ? `Explain my top pick: ${top}` : null,
+      "What should I buy next under $500?",
+      "Which of my picks are below FMV?",
+      "How can I strengthen my collection?",
+    ].filter(Boolean) as string[];
+  }, [result, isStale]);
+
   return (
-    <div className="space-y-10">
+    <>
       <SideNav
         hasResults={Boolean(result && !isStale)}
         onOpenAssistant={() => setAssistantOpen((v) => !v)}
       />
 
-      <section
-        id="top"
-        className="panel-gold animate-in relative overflow-hidden rounded-3xl px-6 py-10 sm:p-10 lg:p-12"
-      >
-        <div
-          className="hero-orb pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full opacity-50 blur-3xl"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(167,139,250,0.4), transparent 68%)",
-          }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full opacity-30 blur-3xl"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(45,212,191,0.35), transparent 70%)",
-          }}
-          aria-hidden
-        />
-        <div className="relative">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="section-label text-[#c9a961]">TasteForge Agent</p>
-            <span className="badge-live px-2.5 py-0.5 text-[10px]">
-              Live Renaiss
-            </span>
-          </div>
-          <h2 className="headline mt-4 text-3xl sm:text-4xl lg:text-[3.25rem]">
-            <span className="text-stone-50">Your wallet, your taste →</span>
-            <br />
-            <span className="text-identity">your collector identity.</span>
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-400 sm:text-base">
-            Reveal your collector archetype from a live holdings snapshot and
-            optional taste signals — then match Best Overall &amp; Best Value
-            cards on Renaiss.
-          </p>
+      <HeroSection onSeeExample={seeExample} />
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              { label: "Collector archetypes", value: "11" },
-              { label: "Taste vector", value: "10-D" },
-              { label: "Listings scored", value: "~150" },
-              { label: "Collector paths", value: "Holder · Quiz · Social" },
-            ].map((stat) => (
-              <div key={stat.label} className="hero-stat">
-                <p className="text-lg font-semibold text-stone-100">
-                  {stat.value}
-                </p>
-                <p className="mt-0.5 text-[10px] uppercase tracking-wider text-stone-500">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative mt-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() =>
-              scrollToSection("analyze", {
-                focusSelector: "#wallet-address-input",
-              })
-            }
-            className="btn-cta btn-cta-hero"
-          >
-            Enter wallet → Analyze
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("marketplace")}
-            className="btn-ghost"
-          >
-            Browse marketplace
-          </button>
-        </div>
-        <div className="relative mt-6 opacity-90">
-          <LiveMarketPreview />
-        </div>
-      </section>
-
-      <div className="animate-in animate-in-delay-1">
+      {/* Analysis workspace — wallet input, live progress, real results */}
+      <div className="space-y-8 pt-6">
       <WalletInput
         walletAddress={walletAddress}
         xHandle={xHandle}
@@ -511,7 +530,19 @@ export function TasteForgeDemo() {
         isRunning={isRunning}
         disabled={isRunning}
       />
-      </div>
+
+      {!result && (
+        <>
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-[var(--border)]" />
+            <span className="text-xs uppercase tracking-[0.16em] text-[var(--ink-3)]">
+              or — no wallet? start with your taste
+            </span>
+            <div className="h-px flex-1 bg-[var(--border)]" />
+          </div>
+          <VisualTasteQuiz onReveal={runTasteOnly} isRunning={isRunning} />
+        </>
+      )}
 
       <AnalysisContextBanner
         walletAddress={walletAddress}
@@ -553,6 +584,12 @@ export function TasteForgeDemo() {
         Only show results panels when they have real content.
         Empty "Wallet… / No Taste Vector / No holdings" shells are noise pre-analyze.
       */}
+      {result && !isStale && <LiveDashboard result={result} />}
+
+      {result && !isStale && (
+        <AskAiPanel questions={resultQuestions} onAsk={askAssistant} />
+      )}
+
       {result && !isStale && (
         <div id="results" className="scroll-mt-24 grid gap-6 lg:grid-cols-2">
           <CollectorProfile data={result.collectorData} />
@@ -599,6 +636,7 @@ export function TasteForgeDemo() {
                 tasteQuiz,
                 tasteSource,
                 autoAnalyze: true,
+                display: shareDisplay,
               }) || undefined
             }
             shareSummary={[
@@ -633,13 +671,15 @@ export function TasteForgeDemo() {
           />
 
           <PairHighlightGrid pairs={result.consecutivePairs} />
+
+          <CollectorConsole result={result} />
         </div>
       )}
 
       {result && !isStale && (
-        <p className="text-center text-[10px] text-zinc-600">
+        <p className="text-center text-[10px] text-[var(--ink-3)]">
           Live analysis ·{" "}
-          <span className="font-mono text-zinc-400">
+          <span className="font-mono text-[var(--ink-2)]">
             {result.walletAddress?.slice(0, 10)}…
           </span>{" "}
           · {result.catalogSize} marketplace cards scored ·{" "}
@@ -650,36 +690,29 @@ export function TasteForgeDemo() {
         </p>
       )}
 
-      <MarketplaceShowcase variant="supplementary" />
+        <MetricsRow />
+      </div>
+
+      <HowItWorks />
+
+      <AiPreviewShowcase
+        tasteVector={result && !isStale ? result.tasteVector : null}
+      />
+
+      <MarketplaceExplorer result={result && !isStale ? result : null} />
+
+      <FooterCta />
 
       <TasteAssistant
         open={assistantOpen}
         onOpenChange={setAssistantOpen}
         context={chatContext}
+        suggestions={resultQuestions.length ? resultQuestions : undefined}
+        seedQuestion={assistantSeed}
+        onSeedConsumed={() => setAssistantSeed(null)}
       />
 
-      <footer className="border-t border-white/[0.06] pt-8 text-center">
-        <div className="mx-auto mb-3 flex w-fit items-center justify-center gap-2.5">
-          <div className="logo-mark flex items-center justify-center rounded-xl p-1.5">
-            <TasteForgeLogoMark size={22} />
-          </div>
-          <p className="headline text-lg text-gradient-brand">TasteForge</p>
-        </div>
-        <p className="mt-2 text-xs text-zinc-600">
-          Renaiss Hackathon · July 11 · Built for collectors who want taste{" "}
-          <em className="text-stone-500 not-italic">and</em> value
-        </p>
-        <p className="mt-3 text-[10px] text-zinc-700">
-        <a
-          href="https://github.com/blueskylh/renaiss-scanner"
-          className="text-zinc-500 hover:text-zinc-300"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          renaiss-scanner
-        </a>
-        </p>
-      </footer>
-    </div>
+      <SiteFooter />
+    </>
   );
 }

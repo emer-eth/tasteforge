@@ -19,11 +19,11 @@ function PairCardImage({
         <img
           src={card.imageUrl}
           alt={card.name}
-          className="aspect-[2/3] w-full rounded-xl border border-zinc-700 object-cover shadow-lg shadow-purple-500/10"
+          className="aspect-[2/3] w-full rounded-xl border border-[var(--border)] object-cover shadow-lg shadow-purple-500/10"
           loading="lazy"
         />
       ) : (
-        <div className="flex aspect-[2/3] w-full items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800/80 px-2 text-center text-[10px] text-zinc-500">
+        <div className="flex aspect-[2/3] w-full items-center justify-center rounded-xl border border-[var(--border)] bg-white/[0.06] px-2 text-center text-[10px] text-[var(--ink-3)]">
           {card.name.slice(0, 30)}
         </div>
       )}
@@ -44,11 +44,11 @@ function PairSide({ card }: { card: ConsecutivePairCard }) {
       <p className="mt-2 font-mono text-sm font-semibold text-purple-300">
         {card.serial}
       </p>
-      <p className="mt-1 line-clamp-2 text-[11px] leading-tight text-zinc-400">
+      <p className="mt-1 line-clamp-2 text-[11px] leading-tight text-[var(--ink-2)]">
         {card.name}
       </p>
       {card.grade && (
-        <p className="mt-1 text-[10px] text-zinc-500">
+        <p className="mt-1 text-[10px] text-[var(--ink-3)]">
           {card.grader} {card.grade}
         </p>
       )}
@@ -58,7 +58,7 @@ function PairSide({ card }: { card: ConsecutivePairCard }) {
           ${card.askPrice.toFixed(2)}
         </span>
         {card.fmv != null && card.fmv > 0 && (
-          <span className="text-[10px] text-zinc-500">
+          <span className="text-[10px] text-[var(--ink-3)]">
             FMV ${card.fmv.toFixed(2)}
           </span>
         )}
@@ -86,7 +86,7 @@ function PairRow({ pair }: { pair: ScoredConsecutivePair }) {
           <span className="rounded-full border border-purple-500/40 bg-purple-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-300">
             +1 Consecutive
           </span>
-          <span className="mt-1 font-mono text-[10px] text-zinc-500">
+          <span className="mt-1 font-mono text-[10px] text-[var(--ink-3)]">
             {pair.serialRange}
           </span>
         </div>
@@ -94,13 +94,13 @@ function PairRow({ pair }: { pair: ScoredConsecutivePair }) {
         <PairSide card={pair.card2} />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-3">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border)] pt-3">
         <div className="flex flex-wrap gap-2 text-[10px]">
-          <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-zinc-300">
+          <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[var(--ink-2)]">
             Total ${pair.totalCost.toFixed(2)}
           </span>
           {pair.totalFmv > 0 && (
-            <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-zinc-400">
+            <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[var(--ink-2)]">
               FMV ${pair.totalFmv.toFixed(2)}
             </span>
           )}
@@ -124,10 +124,10 @@ export function PairHighlightGrid({ pairs }: PairHighlightGridProps) {
     <section>
       <div className="mb-4 border-l-[3px] border-violet-400/50 pl-4">
         <p className="section-label text-violet-400">Consecutive Pairs</p>
-        <h2 className="headline mt-2 text-2xl text-zinc-50">
+        <h2 className="headline mt-2 text-2xl text-[#f5f3ee]">
           Live Renaiss listings · both cards buyable
         </h2>
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 text-xs text-[var(--ink-3)]">
           {pairs.length} pair{pairs.length !== 1 ? "s" : ""} matched to your
           taste vector
         </p>

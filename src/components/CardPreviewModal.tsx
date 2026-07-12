@@ -60,17 +60,17 @@ export function CardPreviewModal({
         aria-label="Close preview"
       />
 
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950 shadow-2xl sm:flex-row">
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[#171511] shadow-2xl sm:flex-row">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900/90 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+          className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-[#171511]/90 text-[var(--ink-2)] transition-colors hover:bg-white/[0.06] hover:text-[#f5f3ee]"
           aria-label="Close"
         >
           ✕
         </button>
 
-        <div className="flex min-h-[280px] flex-1 items-center justify-center bg-zinc-900 p-4 sm:min-h-0 sm:max-w-[45%]">
+        <div className="flex min-h-[280px] flex-1 items-center justify-center bg-[#171511] p-4 sm:min-h-0 sm:max-w-[45%]">
           {hasLiveImage ? (
             <img
               src={card.imageUrl}
@@ -103,34 +103,34 @@ export function CardPreviewModal({
               </span>
             )}
             {section && (
-              <span className="rounded-full border border-zinc-700 px-2 py-0.5 text-[10px] text-zinc-400">
+              <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--ink-2)]">
                 {section === "best-value" ? "Best Value" : "Best Overall"}
               </span>
             )}
           </div>
-          <h3 className="headline mt-1 text-2xl text-zinc-50">{card.title}</h3>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h3 className="headline mt-1 text-2xl text-[#f5f3ee]">{card.title}</h3>
+          <p className="mt-1 text-sm text-[var(--ink-2)]">
             {card.artist} · {card.series}
           </p>
           {card.description && (
-            <p className="mt-2 text-xs text-zinc-500">{card.description}</p>
+            <p className="mt-2 text-xs text-[var(--ink-3)]">{card.description}</p>
           )}
 
           <div className="mt-4 grid grid-cols-3 gap-2">
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-2 text-center">
-              <p className="text-[9px] uppercase text-zinc-500">Ask</p>
+            <div className="rounded-lg border border-[var(--border)] bg-[#171511]/80 p-2 text-center">
+              <p className="text-[9px] uppercase text-[var(--ink-3)]">Ask</p>
               <p className="text-sm font-bold text-emerald-400">
                 ${card.floorPrice.toFixed(0)}
               </p>
             </div>
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-2 text-center">
-              <p className="text-[9px] uppercase text-zinc-500">FMV</p>
-              <p className="text-sm font-bold text-zinc-200">
+            <div className="rounded-lg border border-[var(--border)] bg-[#171511]/80 p-2 text-center">
+              <p className="text-[9px] uppercase text-[var(--ink-3)]">FMV</p>
+              <p className="text-sm font-bold text-[#f5f3ee]">
                 ${card.fmv.toFixed(0)}
               </p>
             </div>
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-2 text-center">
-              <p className="text-[9px] uppercase text-zinc-500">Match</p>
+            <div className="rounded-lg border border-[var(--border)] bg-[#171511]/80 p-2 text-center">
+              <p className="text-[9px] uppercase text-[var(--ink-3)]">Match</p>
               <p className="text-sm font-bold text-amber-400">
                 {resonanceScore != null
                   ? `${(resonanceScore * 100).toFixed(0)}%`
@@ -150,13 +150,13 @@ export function CardPreviewModal({
           )}
 
           {explanation && (
-            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+            <p className="mt-2 text-sm leading-relaxed text-[var(--ink-2)]">
               {explanation}
             </p>
           )}
 
           {valueScore != null && (
-            <p className="mt-2 text-[10px] text-zinc-500">
+            <p className="mt-2 text-[10px] text-[var(--ink-3)]">
               Value score: {(valueScore * 100).toFixed(0)}% · Liquidity{" "}
               {(card.liquidity * 100).toFixed(0)}%
             </p>
@@ -174,7 +174,7 @@ export function CardPreviewModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200"
+              className="rounded-xl border border-[var(--border)] px-5 py-2.5 text-sm text-[var(--ink-2)] transition-colors hover:border-zinc-600 hover:text-[#f5f3ee]"
             >
               Keep browsing
             </button>

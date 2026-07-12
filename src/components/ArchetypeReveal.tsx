@@ -97,7 +97,7 @@ export function ArchetypeReveal({
         </h2>
 
         {tasteVector.summary && (
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-stone-400 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--ink-2)] sm:text-lg">
             {tasteVector.summary}
           </p>
         )}
@@ -135,11 +135,23 @@ export function ArchetypeReveal({
               color: "#0c0a08",
             }}
           >
-            {copied ? "Copied!" : "Share my Collector DNA"}
+            {copied ? "Copied link!" : "Copy my Collector DNA"}
           </button>
+          {shareUrl && (
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                `I'm a ${archetype} on TasteForge — what's your collector identity?`,
+              )}&url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-glass"
+            >
+              Share on X <span aria-hidden>↗</span>
+            </a>
+          )}
         </div>
 
-        <p className="mt-4 text-[11px] text-stone-600">
+        <p className="mt-4 text-[11px] text-[var(--ink-3)]">
           Identity derived from wallet holdings, optional taste signals, and live
           Renaiss catalog — not reconstructed trade history.
         </p>

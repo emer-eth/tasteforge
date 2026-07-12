@@ -95,19 +95,35 @@ export function WalletInput({
   };
 
   return (
-    <section id="analyze" className="panel scroll-mt-24 p-6 sm:p-8">
+    <section
+      id="analyze"
+      className="glass scroll-mt-28 rounded-[28px] p-6 sm:p-10 lg:p-12"
+    >
       <div className="flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c9a961]/15 text-sm font-bold text-[#c9a961] ring-1 ring-[#c9a961]/30">
-          1
+        <span
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 text-[var(--gold)]"
+          style={{
+            background:
+              "radial-gradient(circle at 30% 25%, rgba(216,181,107,0.2), transparent 60%), rgba(23,21,17,0.9)",
+          }}
+          aria-hidden
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M3 9h18" stroke="currentColor" strokeWidth="1.6" />
+            <circle cx="16.5" cy="13.5" r="1.4" fill="currentColor" />
+          </svg>
         </span>
-        <p className="section-label text-stone-500">Wallet + optional taste</p>
+        <div>
+          <h2 className="headline text-2xl text-[#f5f3ee] sm:text-3xl">
+            Start your analysis
+          </h2>
+          <p className="text-sm text-[var(--ink-2)]">
+            Paste a wallet to reveal your collector identity — read-only, no
+            keys, no transactions.
+          </p>
+        </div>
       </div>
-      <p className="mt-2 text-sm text-stone-400">
-        <strong className="font-medium text-stone-200">Wallet is required.</strong>{" "}
-        Optionally enrich with <em>one</em> path — X &amp; social text{" "}
-        <strong className="font-medium text-stone-300">or</strong> the quick
-        taste form. Both pair with current wallet holdings during analysis.
-      </p>
 
       <DemoWalletChips
         onSelect={onDemoSelect}
@@ -115,19 +131,30 @@ export function WalletInput({
         disabled={disabled || isRunning}
       />
 
-      <label className="mt-6 block text-xs font-medium text-stone-500">
-        Wallet address *
+      <label className="mt-7 block text-xs font-medium uppercase tracking-wide text-[var(--ink-3)]">
+        Wallet address
       </label>
-      <div className="mt-1.5 flex flex-col gap-3 sm:flex-row">
-        <input
-          id="wallet-address-input"
-          type="text"
-          value={walletAddress}
-          onChange={(e) => onWalletChange(e.target.value)}
-          placeholder="0x..."
-          disabled={disabled || isRunning}
-          className="input-brand flex-1 px-4 py-3 font-mono text-sm disabled:opacity-50"
-        />
+      <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <span
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--ink-3)]"
+            aria-hidden
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M3 9h18" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          </span>
+          <input
+            id="wallet-address-input"
+            type="text"
+            value={walletAddress}
+            onChange={(e) => onWalletChange(e.target.value)}
+            placeholder="0x… or ENS"
+            disabled={disabled || isRunning}
+            className="input-wallet w-full pl-12 pr-4 font-mono text-sm disabled:opacity-50"
+          />
+        </div>
         {onPreview && (
           <button
             type="button"
@@ -135,15 +162,19 @@ export function WalletInput({
             disabled={
               disabled || isFetching || isRunning || walletAddress.length < 10
             }
-            className="btn-ghost shrink-0 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-glass shrink-0 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isFetching ? "Checking…" : "Preview wallet"}
+            {isFetching ? "Checking…" : "Preview demo"}
           </button>
         )}
       </div>
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--ink-3)]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--live)]" aria-hidden />
+        We never move your assets. Read-only analysis.
+      </p>
 
       <div className="mt-6">
-        <p className="text-xs font-medium text-stone-500">
+        <p className="text-xs font-medium text-[var(--ink-3)]">
           Optional taste enrichment — pick one
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -209,7 +240,7 @@ export function WalletInput({
           </div>
 
           {normalizedHandle && (
-            <div className="panel-teal rounded-xl px-4 py-3 text-xs leading-relaxed text-stone-400">
+            <div className="panel-teal rounded-xl px-4 py-3 text-xs leading-relaxed text-[var(--ink-2)]">
               <p className="font-medium text-teal-300">X social path</p>
               <p className="mt-1">
                 Open their X profile, use <strong>Fetch bio via Blink</strong>, or
@@ -222,7 +253,7 @@ export function WalletInput({
             <p className="text-xs text-amber-400/90">{bioError}</p>
           )}
 
-          <label className="block text-xs font-medium text-[#c9a961]/90">
+          <label className="block text-xs font-medium text-[#d8b56b]/90">
             Social taste signals
           </label>
           <textarea
@@ -251,24 +282,23 @@ export function WalletInput({
       )}
 
       {tasteSource === "none" && (
-        <p className="mt-4 text-xs text-stone-600">
+        <p className="mt-4 text-xs text-[var(--ink-3)]">
           Analysis will use wallet holdings, activity, and vision on held card
           images — no extra taste input.
         </p>
       )}
 
-      <div className="mt-6 rounded-2xl border border-[#c9a961]/25 bg-gradient-to-b from-[#c9a961]/10 to-transparent p-4 sm:p-5">
-        <p className="section-label text-[#c9a961]/90">Primary action</p>
-        <p className="mt-1 text-xs text-stone-500">
-          Wallet above → run full taste analysis on live Renaiss listings.
+      <div className="mt-7 flex flex-col gap-3 border-t border-[var(--border)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-[var(--ink-3)]">
+          Runs a full taste analysis on live Renaiss listings.
         </p>
         <button
           type="button"
           onClick={onAnalyze}
           disabled={!canAnalyze}
-          className="btn-cta btn-cta-hero mt-3 w-full sm:w-auto"
+          className="btn-gold w-full sm:w-auto"
         >
-          {isRunning ? "Analyzing wallet…" : "Analyze Taste →"}
+          {isRunning ? "Analyzing wallet…" : "Analyze wallet →"}
         </button>
       </div>
 
@@ -276,7 +306,7 @@ export function WalletInput({
         <div className="panel-teal mt-4 rounded-xl px-4 py-3">
           <p className="section-label text-teal-400/80">Wallet preview (optional)</p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-            <p className="font-mono text-xs text-stone-300">
+            <p className="font-mono text-xs text-[var(--ink-2)]">
               {holdings.address.slice(0, 10)}…{holdings.address.slice(-8)}
             </p>
             <span className="text-[10px] text-teal-400/80">

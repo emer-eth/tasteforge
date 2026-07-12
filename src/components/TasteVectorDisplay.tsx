@@ -23,8 +23,8 @@ export function TasteVectorDisplay({
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <p className="section-label text-stone-500">10-D Taste Vector</p>
-          <p className="mt-1 font-mono text-sm text-stone-400">
+          <p className="section-label text-[var(--ink-3)]">10-D Taste Vector</p>
+          <p className="mt-1 font-mono text-sm text-[var(--ink-2)]">
             {(tasteVector.confidence * 100).toFixed(0)}% confidence
           </p>
           {tasteVector.tasteArchetype && (
@@ -57,15 +57,16 @@ export function TasteVectorDisplay({
         </div>
       </div>
 
-      <p className="mb-3 text-sm leading-relaxed text-stone-300">
+      <p className="mb-3 text-sm leading-relaxed text-[var(--ink-2)]">
         {tasteVector.summary}
       </p>
 
-      {tasteVector.signalAnalysis && (
-        <p className="mb-4 text-xs italic text-stone-500">
-          {tasteVector.signalAnalysis}
-        </p>
-      )}
+      {tasteVector.signalAnalysis &&
+        !tasteVector.signalAnalysis.trim().startsWith("{") && (
+          <p className="mb-4 text-xs italic text-[var(--ink-3)]">
+            {tasteVector.signalAnalysis}
+          </p>
+        )}
 
       <div className="mb-4 space-y-2.5">
         {(Object.keys(DIMENSION_LABELS) as (keyof TasteDimensions)[]).map(
@@ -90,9 +91,9 @@ export function TasteVectorDisplay({
                 }
               >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-stone-500">
+                  <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--ink-3)]">
                     {left}
-                    <span className="mx-1.5 text-stone-600">←→</span>
+                    <span className="mx-1.5 text-[var(--ink-3)]">←→</span>
                     {right}
                   </span>
                   <span
@@ -128,7 +129,7 @@ export function TasteVectorDisplay({
       <div className="flex flex-wrap gap-4">
         {tasteVector.emotionalTags?.length > 0 && (
           <div>
-            <p className="section-label mb-1.5 text-stone-500">Emotional Layer</p>
+            <p className="section-label mb-1.5 text-[var(--ink-3)]">Emotional Layer</p>
             <div className="flex flex-wrap gap-1.5">
               {tasteVector.emotionalTags.map((tag) => (
                 <span
@@ -147,12 +148,17 @@ export function TasteVectorDisplay({
           </div>
         )}
         <div>
-          <p className="section-label mb-1.5 text-stone-500">Aesthetic Tags</p>
+          <p className="section-label mb-1.5 text-[var(--ink-3)]">Aesthetic Tags</p>
           <div className="flex flex-wrap gap-1.5">
             {tasteVector.aestheticTags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-300"
+                className="rounded-full border px-2 py-0.5 text-xs"
+                style={{
+                  borderColor: `rgba(${theme.accentRgb}, 0.28)`,
+                  background: `rgba(${theme.accentRgb}, 0.1)`,
+                  color: theme.accent,
+                }}
               >
                 {tag}
               </span>
@@ -161,12 +167,12 @@ export function TasteVectorDisplay({
         </div>
         {tasteVector.colorPalette?.length > 0 && (
           <div>
-            <p className="section-label mb-1.5 text-stone-500">Palette</p>
+            <p className="section-label mb-1.5 text-[var(--ink-3)]">Palette</p>
             <div className="flex gap-1">
               {tasteVector.colorPalette.map((color) => (
                 <div
                   key={color}
-                  className="h-6 w-6 rounded-md border border-stone-700"
+                  className="h-6 w-6 rounded-md border border-[var(--border)]"
                   style={{ backgroundColor: color }}
                   title={color}
                 />

@@ -11,12 +11,20 @@ interface TasteAssistantProps {
   context?: ChatContext;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Result-aware suggested questions (override defaults when present). */
+  suggestions?: string[];
+  /** When set (and open), auto-sends this question once. */
+  seedQuestion?: string | null;
+  onSeedConsumed?: () => void;
 }
 
 export function TasteAssistant({
   context,
   open: controlledOpen,
   onOpenChange,
+  suggestions,
+  seedQuestion,
+  onSeedConsumed,
 }: TasteAssistantProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
@@ -101,6 +109,21 @@ export function TasteAssistant({
     [context, isLoading, messages],
   );
 
+  const lastSeed = useRef<string | null>(null);
+  useEffect(() => {
+    if (!seedQuestion) {
+      lastSeed.current = null;
+      return;
+    }
+    if (open && lastSeed.current !== seedQuestion) {
+      lastSeed.current = seedQuestion;
+      void sendMessage(seedQuestion);
+      onSeedConsumed?.();
+    }
+  }, [open, seedQuestion, sendMessage, onSeedConsumed]);
+
+  const chips = suggestions?.length ? suggestions : SUGGESTED_QUESTIONS;
+
   if (!open) return null;
 
   return (
@@ -121,7 +144,7 @@ export function TasteAssistant({
         style={{ background: "#211a2e" }}
       >
         <div>
-          <p className="text-sm font-semibold text-stone-50">TasteForge Guide</p>
+          <p className="text-sm font-semibold text-[#f5f3ee]">TasteForge Guide</p>
           <p className="text-[10px] text-violet-300">
             Live help · wallets, taste, recommendations
             {mode === "llm" ? " · AI" : " · Guide"}
@@ -130,7 +153,7 @@ export function TasteAssistant({
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-lg px-2 py-1 text-stone-400 transition-colors hover:bg-white/10 hover:text-stone-100"
+          className="rounded-lg px-2 py-1 text-[var(--ink-2)] transition-colors hover:bg-white/10 hover:text-[#f5f3ee]"
           aria-label="Close"
         >
           ✕
@@ -150,8 +173,8 @@ export function TasteAssistant({
             <div
               className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-[#c9a961] text-[#15120d] ring-1 ring-[#e8cf8e]/40"
-                  : "bg-[#2a2238] text-stone-100 ring-1 ring-violet-400/20"
+                  ? "bg-[#d8b56b] text-[#15120d] ring-1 ring-[#e8cf8e]/40"
+                  : "bg-[#2a2238] text-[#f5f3ee] ring-1 ring-violet-400/20"
               }`}
             >
               {msg.content}
@@ -180,7 +203,7 @@ export function TasteAssistant({
           className="flex shrink-0 flex-wrap gap-1.5 border-t border-violet-500/25 px-4 py-2"
           style={{ background: "#1e1830" }}
         >
-          {SUGGESTED_QUESTIONS.map((q) => (
+          {chips.map((q) => (
             <button
               key={q}
               type="button"
@@ -216,7 +239,7 @@ export function TasteAssistant({
             placeholder="Ask anything…"
             rows={1}
             disabled={isLoading}
-            className="min-h-[40px] flex-1 resize-none rounded-xl border border-white/15 bg-[#15120d] px-3 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:opacity-50"
+            className="min-h-[40px] flex-1 resize-none rounded-xl border border-white/15 bg-[#15120d] px-3 py-2 text-sm text-[#f5f3ee] placeholder:text-[var(--ink-3)] focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-500/25 disabled:opacity-50"
           />
           <button
             type="submit"

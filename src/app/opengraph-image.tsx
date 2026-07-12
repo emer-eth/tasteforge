@@ -51,7 +51,7 @@ export default function Image() {
                 height="30"
                 rx="3.5"
                 fill="#1e1912"
-                stroke="#c9a961"
+                stroke="#d8b56b"
                 strokeWidth="1.5"
               />
               <path
@@ -60,12 +60,12 @@ export default function Image() {
                 stroke="#3fa98a"
                 strokeWidth="1"
               />
-              <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#c9a961" />
+              <rect x="13" y="28" width="3" height="4" rx="0.75" fill="#d8b56b" />
               <rect x="18.5" y="26.5" width="3" height="5.5" rx="0.75" fill="#d4847a" />
               <rect x="24" y="27.5" width="3" height="4.5" rx="0.75" fill="#9b8ec4" />
               <path
                 d="M20 15.8 20.85 18.1 23.2 19 20.85 19.9 20 22.2 19.15 19.9 16.8 19 19.15 18.1Z"
-                fill="#c9a961"
+                fill="#d8b56b"
               />
             </svg>
           </div>
@@ -115,7 +115,7 @@ export default function Image() {
           {[
             { label: "Live Renaiss", color: "#3fa98a" },
             { label: "Vision + taste", color: "#9b8ec4" },
-            { label: "Quick form", color: "#c9a961" },
+            { label: "Quick form", color: "#d8b56b" },
           ].map((badge) => (
             <div
               key={badge.label}

@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-import {
-  Archivo,
-  Cormorant_Garamond,
-  IBM_Plex_Mono,
-} from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-archivo",
-  display: "swap",
-});
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
@@ -32,13 +23,13 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "TasteForge — Renaiss Taste Vector Engine",
+  title: "TasteForge — Renaissance Taste Intelligence",
   description:
-    "AI agent that builds a collector Taste Vector from wallet + social signals and recommends the best Renaiss cards for taste and value.",
+    "AI collector intelligence. TasteForge analyzes your on-chain collectibles and taste signals to reveal your collector identity and surface the best opportunities you might be missing.",
   openGraph: {
-    title: "TasteForge — Renaiss Taste Vector Engine",
+    title: "TasteForge — Renaissance Taste Intelligence",
     description:
-      "Wallet + taste → personalized Renaiss card recommendations. Live marketplace, vision on card art, Best Overall & Best Value.",
+      "Your wallet. Your taste. Your collector identity. AI-powered analysis of your collection with Best Overall & Best Value picks on Renaiss.",
     type: "website",
     siteName: "TasteForge",
     url: siteUrl,
@@ -46,9 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TasteForge — Renaiss Taste Vector Engine",
-    description:
-      "Wallet + taste → personalized Renaiss card recommendations.",
+    title: "TasteForge — Renaissance Taste Intelligence",
+    description: "Your wallet. Your taste. Your collector identity.",
   },
 };
 
@@ -60,11 +50,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${ibmPlexMono.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${ibmPlexMono.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="relative min-h-full">
         <div className="page-glow" aria-hidden />
-        <div className="page-mesh" aria-hidden />
         <div className="page-noise" aria-hidden />
         <div className="relative z-10">{children}</div>
       </body>

@@ -23,7 +23,7 @@ export function AgentProgress({
         <div>
           <p className="section-label text-violet-300/80">Agent Pipeline</p>
           {statusLabel && (
-            <p className="mt-1 text-sm text-stone-200">{statusLabel}</p>
+            <p className="mt-1 text-sm text-[#f5f3ee]">{statusLabel}</p>
           )}
         </div>
         <span className="badge-violet px-3 py-1 text-xs font-medium">
@@ -62,8 +62,8 @@ export function AgentProgress({
                   isComplete
                     ? "bg-[rgba(63,169,138,0.2)] text-[#7fd4b8] ring-1 ring-[rgba(63,169,138,0.35)]"
                     : isActive
-                      ? "bg-[#c9a961]/20 text-[#c9a961] ring-2 ring-[#c9a961]/45"
-                      : "bg-white/5 text-stone-600"
+                      ? "bg-[#d8b56b]/20 text-[#d8b56b] ring-2 ring-[#d8b56b]/45"
+                      : "bg-white/5 text-[var(--ink-3)]"
                 }`}
               >
                 {isComplete ? "✓" : step.stepIndex + 1}
@@ -71,10 +71,10 @@ export function AgentProgress({
               <span
                 className={`text-sm ${
                   isActive
-                    ? "font-medium text-stone-100"
+                    ? "font-medium text-[#f5f3ee]"
                     : isComplete
-                      ? "text-stone-400"
-                      : "text-stone-600"
+                      ? "text-[var(--ink-2)]"
+                      : "text-[var(--ink-3)]"
                 }`}
               >
                 {step.label}
